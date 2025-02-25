@@ -11,6 +11,10 @@ string
 -
 cstdint
 -
+iostream
+-
+linux/can.h
+-
 
 /home/alessandro/WheelchairControl/src/CANHandler.cpp
 CANHandler.hpp
@@ -30,6 +34,10 @@ cstring
 unistd.h
 -
 iostream
+-
+sstream
+-
+vector
 -
 
 /home/alessandro/WheelchairControl/src/main.cpp

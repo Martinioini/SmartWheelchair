@@ -7,6 +7,8 @@
 #include <cstring>
 #include <unistd.h>
 #include <iostream>
+#include <sstream>
+#include <vector>
 
 CANHandler::CANHandler(int busNum) : socketFd_(-1) {
     openSocket(busNum);
@@ -60,35 +62,53 @@ bool CANHandler::openSocket(int busNum) {
     return true;
 } 
 
-std::string buildFrame(const std::string& canStr)
-{
-    if(std::find(canStr.begin(), canStr.end(), '#') == canStr.end())
-    {
+struct can_frame CANHandler::buildFrame(const std::string& canStr) {
+    struct can_frame frame = {0};  // Initialize to zeros
+    
+    // Check for '#' delimiter
+    size_t delimiter = canStr.find('#');
+    if (delimiter == std::string::npos) {
         std::cerr << "buildFrame: missing #" << std::endl;
-        return "Err!";
+        return frame;
     }
+
+    // Split into ID and data parts
+    std::string id_str = canStr.substr(0, delimiter);
+    std::string data_str = canStr.substr(delimiter + 1);
     
-    std::vector<std::string> cansplit = split(canStr, '#');
-    int lcanid = cansplit[0].length();
-    bool RTR = cansplit[0].find("R") != std::string::npos;
+    // Parse ID
+    try {
+        // Convert hex string ID to integer
+        unsigned int id = std::stoul(id_str, nullptr, 16);
+        
+        // Set CAN ID based on length (3 for standard, 8 for extended)
+        if (id_str.length() == 3) {
+            frame.can_id = id;
+        } else if (id_str.length() == 8) {
+            frame.can_id = id | CAN_EFF_FLAG;  // Set extended frame flag
+        } else {
+            std::cerr << "Invalid ID length" << std::endl;
+            return frame;
+        }
 
-    if(lcanid == 3)
-    {
-        canid = struct.pack('I', int(cansplit[0], 16) + 0x40000000 * RTR);
+        // Check for Remote Transmission Request
+        if (data_str.find('R') != std::string::npos) {
+            frame.can_id |= CAN_RTR_FLAG;
+            frame.can_dlc = 0;
+            return frame;
+        }
+
+        // Parse data
+        frame.can_dlc = data_str.length() / 2;  // Two hex chars per byte
+        for (size_t i = 0; i < frame.can_dlc && i < 8; i++) {
+            frame.data[i] = std::stoul(data_str.substr(i*2, 2), nullptr, 16);
+        }
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error parsing CAN frame: " << e.what() << std::endl;
+        frame = {0};
     }
 
-    else if(lcanid == 8)
-    {
-        canid = struct.pack('I', int(cansplit[0], 16) + 0x80000000 + 0x40000000 * RTR);
-    }
-
-    else
-    {
-        std::cerr << "build_frame: cansend frame id format error: " << canStr << std::endl;
-        return "Err!";
-    }
-    int can_dlc = 0;
-    int len_datstr = cansplit[1].length();
-    
+    return frame;
 }
 
