@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/CANHandler.hpp
+string
+-
+cstdint
+-
+
+/home/alessandro/WheelchairControl/src/CANHandler.cpp
+CANHandler.hpp
+/home/alessandro/WheelchairControl/src/CANHandler.hpp
+sys/socket.h
+-
+linux/can.h
+-
+linux/can/raw.h
+-
+net/if.h
+-
+sys/ioctl.h
+-
+cstring
+-
+unistd.h
+-
+iostream
+-
+
