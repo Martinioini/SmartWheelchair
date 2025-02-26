@@ -36,7 +36,7 @@ bool CANHandler::openSocket(int canNum) {
     strcpy(ifr.ifr_name, canInterface.c_str());
     
     if (ioctl(socketFd_, SIOCGIFINDEX, &ifr) < 0) {
-        // Try virtual CAN if regular CAN fails
+        // Try virtual CAN if regular CAN fails, used for testing
         std::string vcanInterface = "vcan" + std::to_string(canNum);
         strcpy(ifr.ifr_name, vcanInterface.c_str());
         if (ioctl(socketFd_, SIOCGIFINDEX, &ifr) < 0) {
@@ -140,6 +140,21 @@ std::string CANHandler::dissectFrame(const can_frame& frame) {
             ss << std::setw(2) << static_cast<int>(frame.data[i]);
         }
     }
-    
+
     return ss.str();
+}
+
+bool CANHandler::sendFrame(const std::string& frameStr) {
+    
+    can_frame frame = buildFrame(frameStr);
+    
+    // Send the frame
+    ssize_t nbytes = write(socketFd_, &frame, sizeof(struct can_frame));
+    
+    if (nbytes != sizeof(struct can_frame)) {
+        std::cerr << "Error sending CAN frame " << frameStr << std::endl;
+        return false;
+    }
+    
+    return true;
 }

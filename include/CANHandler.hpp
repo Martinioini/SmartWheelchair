@@ -11,10 +11,8 @@ public:
 
     bool openSocket(int canNum);
     struct can_frame buildFrame(const std::string& canStr);
-    bool sendFrame(const std::string& canStr);
+    bool sendFrame(const std::string& frameStr);
     std::string dissectFrame(const can_frame& frame);
-    bool waitForFrame(const std::string& filterStr);
-    
 
 private:
     int socketFd_;
