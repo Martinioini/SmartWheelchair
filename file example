@@ -1,0 +1,11 @@
+For future reference this is the format of the CAN frames; this part is processed by the CANHandler.cpp file.
+
+123#1122334455667788   (Standard frame, 8 bytes of data)
+1ABCDEFF#AABBCC        (Extended frame, 3 bytes of data)
+123#R                 (Remote trasmision request)
+
+
+
+
+
+

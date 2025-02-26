@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <iomanip>
 
 CANHandler::CANHandler(int busNum) : socketFd_(-1) {
     openSocket(busNum);
@@ -21,7 +22,7 @@ CANHandler::~CANHandler() {
 }
 
 //Opens a socket to the CAN interface and uses VSocket if regular CAN fails
-bool CANHandler::openSocket(int busNum) {
+bool CANHandler::openSocket(int canNum) {
     // Create CAN socket
     socketFd_ = socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (socketFd_ < 0) {
@@ -31,12 +32,12 @@ bool CANHandler::openSocket(int busNum) {
 
     // Specify CAN interface
     struct ifreq ifr;
-    std::string canInterface = "can" + std::to_string(busNum);
+    std::string canInterface = "can" + std::to_string(canNum);
     strcpy(ifr.ifr_name, canInterface.c_str());
     
     if (ioctl(socketFd_, SIOCGIFINDEX, &ifr) < 0) {
         // Try virtual CAN if regular CAN fails
-        std::string vcanInterface = "vcan" + std::to_string(busNum);
+        std::string vcanInterface = "vcan" + std::to_string(canNum);
         strcpy(ifr.ifr_name, vcanInterface.c_str());
         if (ioctl(socketFd_, SIOCGIFINDEX, &ifr) < 0) {
             std::cerr << "Failed to open " << canInterface << " and " << vcanInterface << std::endl;
@@ -72,7 +73,7 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
         return frame;
     }
 
-    // Split into ID and data parts
+    // Split into ID and data 
     std::string id_str = canStr.substr(0, delimiter);
     std::string data_str = canStr.substr(delimiter + 1);
     
@@ -105,10 +106,40 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
         }
     }
     catch (const std::exception& e) {
-        std::cerr << "Error parsing CAN frame: " << e.what() << std::endl;
+        std::cerr << "Error parsing CAN frame" << std::endl;
         frame = {0};
     }
 
     return frame;
 }
 
+std::string CANHandler::dissectFrame(const can_frame& frame) {
+    uint32_t can_id = frame.can_id & CAN_EFF_MASK;  // Extract actual ID (mask out flags)
+    bool is_extended = frame.can_id & CAN_EFF_FLAG; // Check if Extended Frame
+    bool is_rtr = frame.can_id & CAN_RTR_FLAG;      // Check if Remote Frame
+    uint8_t dlc = frame.can_dlc;                    // Data Length Code
+
+    std::stringstream ss;
+    
+    ss << std::hex << std::setfill('0');
+    if (is_extended) {
+        ss << std::setw(8) << can_id;
+    } else {
+        ss << std::setw(3) << can_id;
+    }
+    
+    // Add separator
+    ss << "#";
+    
+    // Handle RTR frames
+    if (is_rtr) {
+        ss << "R";
+    } else {
+        // Format data bytes
+        for (int i = 0; i < dlc; i++) {
+            ss << std::setw(2) << static_cast<int>(frame.data[i]);
+        }
+    }
+    
+    return ss.str();
+}

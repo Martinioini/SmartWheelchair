@@ -9,11 +9,12 @@ public:
     CANHandler(int busNum);
     ~CANHandler();
 
-    bool sendFrame(const std::string& canStr);
-    std::string dissectFrame(const uint8_t* frame);
-    bool waitForFrame(const std::string& filterStr);
-    bool openSocket(int busNum);
+    bool openSocket(int canNum);
     struct can_frame buildFrame(const std::string& canStr);
+    bool sendFrame(const std::string& canStr);
+    std::string dissectFrame(const can_frame& frame);
+    bool waitForFrame(const std::string& filterStr);
+    
 
 private:
     int socketFd_;
