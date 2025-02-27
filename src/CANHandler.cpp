@@ -21,7 +21,7 @@ CANHandler::~CANHandler() {
     }
 }
 
-//Opens a socket to the CAN interface and uses VSocket if regular CAN fails
+//Opens a socket to the CAN interface and uses a virtual C if regular CAN fails
 bool CANHandler::openSocket(int canNum) {
     // Create CAN socket
     socketFd_ = socket(PF_CAN, SOCK_RAW, CAN_RAW);
@@ -63,6 +63,7 @@ bool CANHandler::openSocket(int canNum) {
     return true;
 } 
 
+//Builds a CAN frame from a string representation (see linux/can.h for the format)
 struct can_frame CANHandler::buildFrame(const std::string& canStr) {
     struct can_frame frame = {0};  // Initialize to zeros
     
@@ -113,6 +114,7 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
     return frame;
 }
 
+//Dissects a CAN frame and returns a string representation
 std::string CANHandler::dissectFrame(const can_frame& frame) {
     uint32_t can_id = frame.can_id & CAN_EFF_MASK;  // Extract actual ID (mask out flags)
     bool is_extended = frame.can_id & CAN_EFF_FLAG; // Check if Extended Frame
