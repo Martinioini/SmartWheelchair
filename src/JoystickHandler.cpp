@@ -26,7 +26,7 @@ JoystickHandler::JoystickHandler() {
     numAxes_ = num_axes;
     numButtons_ = num_buttons;
 
-    //Retrieve axis map
+    //todo: retrieve axis map
     std::vector<uint8_t> buf_axes(64, 0);
     ioctl(joystick_fd, 0x80406a32, buf_axes.data()); // JSIOCGAXMAP
 }   

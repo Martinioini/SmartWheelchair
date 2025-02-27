@@ -116,31 +116,31 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
 
 //Dissects a CAN frame and returns a string representation
 std::string CANHandler::dissectFrame(const can_frame& frame) {
-    uint32_t can_id = frame.can_id & CAN_EFF_MASK;  // Extract actual ID (mask out flags)
-    bool is_extended = frame.can_id & CAN_EFF_FLAG; // Check if Extended Frame
-    bool is_rtr = frame.can_id & CAN_RTR_FLAG;      // Check if Remote Frame
-    uint8_t dlc = frame.can_dlc;                    // Data Length Code
+    uint32_t can_id = frame.can_id & CAN_EFF_MASK;  // Extract actual ID
+    bool is_extended = frame.can_id & CAN_EFF_FLAG;
+    bool is_rtr = frame.can_id & CAN_RTR_FLAG;
+    uint8_t dlc = frame.can_dlc;
 
     std::stringstream ss;
-    
     ss << std::hex << std::setfill('0');
+    
+    // Format ID with appropriate width (3 or 8 chars)
     if (is_extended) {
         ss << std::setw(8) << can_id;
     } else {
         ss << std::setw(3) << can_id;
     }
     
-    // Add separator
     ss << "#";
     
-    // Handle RTR frames
+    // Always format data bytes
+    for (int i = 0; i < dlc; i++) {
+        ss << std::setw(2) << static_cast<int>(frame.data[i]);
+    }
+    
+    // Append R at the end for RTR frames (to match Python behavior)
     if (is_rtr) {
         ss << "R";
-    } else {
-        // Format data bytes
-        for (int i = 0; i < dlc; i++) {
-            ss << std::setw(2) << static_cast<int>(frame.data[i]);
-        }
     }
 
     return ss.str();
