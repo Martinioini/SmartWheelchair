@@ -21,7 +21,7 @@ CANHandler::~CANHandler() {
     }
 }
 
-//Opens a socket to the CAN interface and uses a virtual C if regular CAN fails
+//Opens a socket to the CAN interface and uses a virtual Can if regular CAN fails
 bool CANHandler::openSocket(int canNum) {
     // Create CAN socket
     socketFd_ = socket(PF_CAN, SOCK_RAW, CAN_RAW);
@@ -35,6 +35,7 @@ bool CANHandler::openSocket(int canNum) {
     std::string canInterface = "can" + std::to_string(canNum);
     strcpy(ifr.ifr_name, canInterface.c_str());
     
+    //Retrieve the interface index 
     if (ioctl(socketFd_, SIOCGIFINDEX, &ifr) < 0) {
         // Try virtual CAN if regular CAN fails, used for testing
         std::string vcanInterface = "vcan" + std::to_string(canNum);
@@ -65,7 +66,7 @@ bool CANHandler::openSocket(int canNum) {
 
 //Builds a CAN frame from a string representation (see linux/can.h for the format)
 struct can_frame CANHandler::buildFrame(const std::string& canStr) {
-    struct can_frame frame = {0};  // Initialize to zeros
+    struct can_frame frame = {0};  
     
     // Check for '#' delimiter
     size_t delimiter = canStr.find('#');
@@ -74,7 +75,7 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
         return frame;
     }
 
-    // Split into ID and data 
+    // Split ID and data 
     std::string id_str = canStr.substr(0, delimiter);
     std::string data_str = canStr.substr(delimiter + 1);
     
@@ -86,9 +87,11 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
         // Set CAN ID based on length (3 for standard, 8 for extended)
         if (id_str.length() == 3) {
             frame.can_id = id;
-        } else if (id_str.length() == 8) {
+        } 
+        else if (id_str.length() == 8) {
             frame.can_id = id | CAN_EFF_FLAG;  // Set extended frame flag
-        } else {
+        } 
+        else {
             std::cerr << "Invalid ID length" << std::endl;
             return frame;
         }
@@ -133,12 +136,10 @@ std::string CANHandler::dissectFrame(const can_frame& frame) {
     
     ss << "#";
     
-    // Always format data bytes
     for (int i = 0; i < dlc; i++) {
         ss << std::setw(2) << static_cast<int>(frame.data[i]);
     }
     
-    // Append R at the end for RTR frames (to match Python behavior)
     if (is_rtr) {
         ss << "R";
     }
