@@ -64,7 +64,7 @@ bool CANHandler::openSocket(int canNum) {
     return true;
 } 
 
-//Builds a CAN frame from a string representation (see linux/can.h for the format)
+//Builds a CAN frame from a string representation (see "CANFormat" for the format)
 struct can_frame CANHandler::buildFrame(const std::string& canStr) {
     struct can_frame frame = {0};  
     
@@ -119,7 +119,9 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
 
 //Dissects a CAN frame and returns a string representation
 std::string CANHandler::dissectFrame(const can_frame& frame) {
-    uint32_t can_id = frame.can_id & CAN_EFF_MASK;  // Extract actual ID
+
+    //Retrieve information about the frame
+    uint32_t can_id = frame.can_id & CAN_EFF_MASK;  
     bool is_extended = frame.can_id & CAN_EFF_FLAG;
     bool is_rtr = frame.can_id & CAN_RTR_FLAG;
     uint8_t dlc = frame.can_dlc;

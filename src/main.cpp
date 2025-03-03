@@ -3,7 +3,7 @@
 #include <iomanip>  // for std::setfill, std::setw
 #include <unistd.h>  // Add this for sleep()
 #include <vector>
-
+#include "JoystickHandler.hpp"
 int main() {
     // Try to initialize CAN handler with bus 0 (can0 or vcan0)
     CANHandler canHandler(0);
@@ -48,6 +48,16 @@ int main() {
             std::cout << "Original:  " << test_frame << std::endl;
             std::cout << "Recovered: " << recovered_string << std::endl;
         }
+    }
+
+    JoystickHandler joystick;
+    
+    std::cout << "Joystick connected. Press Ctrl+C to exit." << std::endl;
+    
+    // Add a small delay between reads to avoid flooding the console
+    while(true) {
+        joystick.readJoystickThread();
+        usleep(10000); // 10ms delay
     }
     
     return 0;
