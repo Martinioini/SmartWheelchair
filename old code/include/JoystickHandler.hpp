@@ -29,6 +29,8 @@ private:
     uint8_t numAxes_;
     uint8_t numButtons_;
 
+    std::string spoofed_id;
+
     float xthreshold = 8 * 0x10000 / 128;
     float ythreshold = 8 * 0x10000 / 128;
     
