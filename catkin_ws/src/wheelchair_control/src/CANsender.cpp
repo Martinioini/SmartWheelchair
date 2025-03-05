@@ -10,8 +10,8 @@
 // Define CAN interface
 const std::string CAN_INTERFACE = "can0";
 
-// Define joystick CAN ID
-const uint32_t RNET_JOYSTICK_ID = 0x0CFF0000; // Example ID, replace with correct one
+//CAN ID THIS WILL BE CHANGED WITH REVERSED ENGINEERING
+const uint32_t RNET_JOYSTICK_ID = 0x0CFF0000; /
 
 // Global variables for joystick position
 uint8_t joystick_x = 0x00;
