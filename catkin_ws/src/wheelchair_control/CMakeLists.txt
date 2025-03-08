@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   socketcan_interface
-  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -151,7 +150,10 @@ add_executable(wheelchair_controller
 )
 
 # Add dependencies for the executable
-add_dependencies(wheelchair_controller ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(wheelchair_controller 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+)
 
 # Specify libraries to link against for the executable
 target_link_libraries(wheelchair_controller
