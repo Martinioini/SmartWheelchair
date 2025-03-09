@@ -5,12 +5,14 @@ CANsender::CANsender(ros::NodeHandle& nh) {
     joystick_y = 0x00;
     joy_sub = nh.subscribe("/joy", 10, &CANsender::joyCallback, this);
 
-    if (!can_driver.init(CAN_INTERFACE, false)) {
-        ROS_ERROR("Failed to initialize CAN interface!");
+    while(!can_driver.init(CAN_INTERFACE, false)) {
+        ROS_ERROR("Failed to initialize CAN interface! Trying again...");
+        ros::Duration(5.0).sleep();
     }
 }
 
 CANsender::~CANsender() {}
+
 // Function to inject a spoofed joystick frame in the wheelchair
 void CANsender::injectRnetJoystickFrame() {
     // Create a CAN frame
@@ -21,6 +23,10 @@ void CANsender::injectRnetJoystickFrame() {
     // Set joystick values
     can_frame.data[0] = joystick_x;
     can_frame.data[1] = joystick_y;
+    
+    // Print the frame details
+    ROS_INFO("Sending CAN frame: ID = 0x%X, Data = [0x%02X, 0x%02X]", 
+             can_frame.id, can_frame.data[0], can_frame.data[1]);
     
     // Send the frame
     if (!can_driver.send(can_frame)) {

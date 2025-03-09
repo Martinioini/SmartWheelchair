@@ -12,7 +12,7 @@ class CANsender{
     // Define CAN interface (in my case always can0)
     private:
 
-        const std::string CAN_INTERFACE = "can0";
+        const std::string CAN_INTERFACE = "vcan0";
         const uint32_t RNET_JOYSTICK_ID = 0x0CFF0000; //todo: reverse engineer the real one
         can::SocketCANInterface can_driver;
         ros::Subscriber joy_sub;
