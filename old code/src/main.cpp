@@ -13,7 +13,7 @@ int main() {
         "02000000#0040",  // Forward movement frame (same ID, modified data)
     };
     
-    for (int i = 0; i < 100000; i++) {
+    for (int i = 0; i < 10000; i++) {
         if(canHandler.sendFrame(test_frames[0])){
             std::cout << "Frame sent successfully" << std::endl;
             usleep(10000);

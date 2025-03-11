@@ -11,7 +11,6 @@
 #include <vector>
 #include <iomanip>
 #include <ros/ros.h>
-#include <fcntl.h>  // For O_NONBLOCK
 
 CANHandler::CANHandler() : socketFd_(-1) {
     // Default constructor - initialize with bus 0
@@ -85,23 +84,6 @@ bool CANHandler::openSocket(int canNum) {
 
     if (bind(socketFd_, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         ROS_ERROR_STREAM("Error binding socket: " << strerror(errno));
-        close(socketFd_);
-        socketFd_ = -1;
-        return false;
-    }
-
-    // Set socket to non-blocking mode
-    int flags = fcntl(socketFd_, F_GETFL, 0);
-    if (flags == -1) {
-        ROS_ERROR_STREAM("Error getting socket flags: " << strerror(errno));
-        close(socketFd_);
-        socketFd_ = -1;
-        return false;
-    }
-    
-    flags |= O_NONBLOCK;
-    if (fcntl(socketFd_, F_SETFL, flags) == -1) {
-        ROS_ERROR_STREAM("Error setting socket to non-blocking: " << strerror(errno));
         close(socketFd_);
         socketFd_ = -1;
         return false;
