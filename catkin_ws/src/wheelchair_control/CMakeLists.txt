@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   socketcan_interface
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -116,14 +117,15 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/wheelchair_control.cpp
-# )
+add_library(${PROJECT_NAME}
+  src/CANsender.cpp
+  src/CANHandler.cpp
+  # ... other source files ...
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -157,6 +159,7 @@ add_dependencies(wheelchair_controller
 
 # Specify libraries to link against for the executable
 target_link_libraries(wheelchair_controller
+  wheelchair_control
   ${catkin_LIBRARIES}
 )
 

@@ -2,7 +2,7 @@
   <!-- Launch joystick driver -->
   <node name="joy_node" pkg="joy" type="joy_node" output="screen" required="true">
     <param name="dev" value="/dev/input/js0"/>
-    <param name="autorepeat_rate" value="20.0"/>
+    <param name="autorepeat_rate" value="500"/>
   </node>
   
   <!-- Launch wheelchair controller node -->

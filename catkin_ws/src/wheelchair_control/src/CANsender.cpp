@@ -1,46 +1,45 @@
-#include "../include/wheelchair_control/CANsender.hpp"
+#include "../include/CANsender.hpp"
 
 ros::Time last_callback_time_;
 double min_callback_interval_; // in seconds
 
-CANsender::CANsender(ros::NodeHandle& nh) {
+CANsender::CANsender(ros::NodeHandle& nh) : can_handler(0) {
+    // Initialize joystick values to 0 as in Python
     joystick_x = 0x00;
     joystick_y = 0x00;
     
-
-    min_callback_interval_ = 0.3;
-    last_callback_time_ = ros::Time::now();
-    
+    // Subscribe to joystick topic
     joy_sub = nh.subscribe("/joy", 10, &CANsender::joyCallback, this);
-
-    // Enable loopback mode for testing with vcan
-    while(!can_driver.init(CAN_INTERFACE, false)) {
-        ROS_ERROR("Failed to initialize CAN interface! Trying again...");
-        ros::Duration(5.0).sleep();
-    }
+    
+    // Send a neutral frame to initialize the wheelchair
+    ROS_INFO("Sending initial neutral frame to initialize wheelchair...");
+    injectRnetJoystickFrame();
 }
 
-CANsender::~CANsender() {}
+CANsender::~CANsender() {
+    // Send a neutral frame when shutting down
+    joystick_x = 0x00;
+    joystick_y = 0x00;
+    injectRnetJoystickFrame();
+}
 
 // Function to inject a spoofed joystick frame in the wheelchair
 void CANsender::injectRnetJoystickFrame() {
-    // Create a CAN frame
-    can::Frame can_frame;
-    can_frame.id = RNET_JOYSTICK_ID;
-    can_frame.dlc = 8;
+    // Format the CAN string in the same way as the Python version
+    std::stringstream ss;
+    ss << RNET_JOYSTICK_ID << "#";
+    ss << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(joystick_x);
+    ss << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(joystick_y);
     
-    // Set joystick values
-    can_frame.data[0] = joystick_x;
-    can_frame.data[1] = joystick_y;
-
-    can_frame.is_extended = (RNET_JOYSTICK_ID > 0x7FF);
+    std::string canStr = ss.str();
     
     // Print the frame details
-    ROS_INFO("Sending CAN frame: ID = 0x%X, Data = [0x%02X, 0x%02X]", 
-             can_frame.id, can_frame.data[0], can_frame.data[1]);
+    ROS_INFO("Sending CAN frame: %s", canStr.c_str());
     
-    // Send the frame
-    if (!can_driver.send(can_frame)) {
+    // Send the frame using the CANHandler
+    if (can_handler.sendFrame(canStr)) {
+        ROS_DEBUG("Frame sent successfully");
+    } else {
         ROS_WARN("Failed to send CAN frame");
     }
 }
@@ -51,17 +50,31 @@ void CANsender::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
     ros::Time current_time = ros::Time::now();
     double elapsed = (current_time - last_callback_time_).toSec();
     
-    if (elapsed < min_callback_interval_) {
-        // Not enough time has passed, skip this callback
-        return;
+    // Get the raw joystick values
+    float x_axis = msg->axes[0];  // Left stick horizontal (-1 to 1)
+    float y_axis = msg->axes[1];  // Left stick vertical (-1 to 1)
+    
+    // Convert ROS joystick values (-1 to 1) to the same range as in Python
+    int16_t x_value = static_cast<int16_t>(x_axis * 32767.0);
+    int16_t y_value = static_cast<int16_t>(y_axis * 32767.0);
+    
+    // Process X axis - match Python's calculation exactly
+    if(std::abs(x_value) > X_THRESHOLD){
+        joystick_x = (0x100 + static_cast<int>(x_value * 100.0 / 128.0)) >> 8 & 0xFF;
     }
-    
-    // Update the last callback time
-    last_callback_time_ = current_time;
-    
-    // Process the joystick message
-    joystick_x = static_cast<uint8_t>((msg->axes[0] + 1.0) * 127);
-    joystick_y = static_cast<uint8_t>((msg->axes[1] + 1.0) * 127);
+    else{
+        joystick_x = 0;
+    }
+
+    // Process Y axis - INVERT the Y value to match Python's behavior
+    if(std::abs(y_value) > Y_THRESHOLD){
+        // Invert the y_value to match Python's behavior
+        int16_t inverted_y = -y_value;
+        joystick_y = (0x100 - static_cast<int>(inverted_y * 100.0 / 128.0)) >> 8 & 0xFF;
+    }
+    else{
+        joystick_y = 0;
+    }
     
     // Inject the frame
     injectRnetJoystickFrame();
@@ -76,7 +89,15 @@ int main(int argc, char** argv) {
     
     ROS_INFO("Wheelchair controller started. Listening for joystick input...");
     
-    ros::spin();
+    // Set a high rate for the ROS loop
+    ros::Rate loop_rate(5000); // 1000 Hz (1ms)
+    
+    while (ros::ok()) {
+        // Process callbacks
+        ros::spinOnce();
+        // Sleep to maintain the desired rate
+        loop_rate.sleep();
+    }
     
     return 0;
 }

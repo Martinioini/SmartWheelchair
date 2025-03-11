@@ -7,20 +7,25 @@
 #include <socketcan_interface/filter.h>
 #include <socketcan_interface/interface.h>
 #include <functional>
+#include "CANHandler.hpp"
+#include <string>
 
 class CANsender{
     // Define CAN interface (in my case always can0)
     private:
 
         const std::string CAN_INTERFACE = "can0";
-        const uint32_t RNET_JOYSTICK_ID = 0x2000000; //static id for joystick frame
-        can::SocketCANInterface can_driver;
+        std::string RNET_JOYSTICK_ID = "02000000"; //static id for joystick frame
+        CANHandler can_handler;
         ros::Subscriber joy_sub;
 
     public:
 
-        uint8_t joystick_x;
-        uint8_t joystick_y;
+        uint16_t joystick_x;
+        uint16_t joystick_y;
+
+        const int X_THRESHOLD = 8 * 0x10000 / 128;
+        const int Y_THRESHOLD = 8 * 0x10000 / 128;
 
         CANsender(ros::NodeHandle& nh);
 
