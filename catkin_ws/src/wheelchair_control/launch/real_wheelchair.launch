@@ -1,0 +1,13 @@
+<launch>
+  <!-- Launch joystick driver -->
+  <node name="joy_node" pkg="joy" type="joy_node" output="screen" required="true">
+    <param name="dev" value="/dev/input/js0"/>
+    <param name="autorepeat_rate" value="20.0"/>
+  </node>
+  
+  <!-- Launch wheelchair controller node -->
+  <node name="wheelchair_controller" pkg="wheelchair_control" type="wheelchair_controller" output="screen" required="true">
+    <!-- Set CAN interface parameter for real hardware -->
+    <param name="can_interface" value="can0"/>
+  </node>
+</launch> 
