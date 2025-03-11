@@ -10,7 +10,6 @@ project(wheelchair_control)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
-  socketcan_interface
   std_msgs
 )
 
