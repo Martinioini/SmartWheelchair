@@ -121,7 +121,7 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
-  src/CANsender.cpp
+  src/WheelchairController.cpp
   src/CANHandler.cpp
   # ... other source files ...
 )
@@ -147,7 +147,7 @@ add_library(${PROJECT_NAME}
 
 # Add the CANsender executable
 add_executable(wheelchair_controller 
-  src/CANsender.cpp
+  src/WheelchairController.cpp
 )
 
 # Add dependencies for the executable

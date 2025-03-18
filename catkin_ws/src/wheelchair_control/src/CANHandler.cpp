@@ -52,6 +52,8 @@ bool CANHandler::openSocket(int canNum) {
         ROS_ERROR_STREAM("Error creating socket: " << strerror(errno));
         return false;
     }
+    int buffer_size = 1024 * 1024; // Increase buffer size to 500 KB
+    setsockopt(socketFd_, SOL_SOCKET, SO_SNDBUF, &buffer_size, sizeof(buffer_size));
 
     // Specify CAN interface
     struct ifreq ifr;

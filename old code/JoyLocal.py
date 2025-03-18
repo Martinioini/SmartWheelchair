@@ -236,17 +236,34 @@ def RNET_JSMerror_exploit(cansocket):
     return(joy_id)
 
 #THREAD: sends RnetJoyFrame every mintime seconds
-def send_joystick_canframe(s,joy_id):
+def send_joystick_canframe(s, joy_id):
     mintime = .01
     nexttime = time() + mintime
-    priorjoystick_x=joystick_x
-    priorjoystick_y=joystick_y
+    priorjoystick_x = joystick_x
+    priorjoystick_y = joystick_y
+    null_frame_sent = False  # Flag to track if the null frame has been sent
+
     while rnet_threads_running:
-        joyframe = joy_id+'#'+dec2hex(joystick_x,2)+dec2hex(joystick_y,2)
-        print(joyframe)
-        cansend(s,joyframe)
+        # Construct the joystick frame
+        joyframe = joy_id + '#' + dec2hex(joystick_x, 2) + dec2hex(joystick_y, 2)
+
+        # Check if the frame is a null frame
+        if joyframe.endswith('#0000'):
+            if not null_frame_sent:
+                # Send the null frame only once
+                print("Sending null frame:", joyframe)
+                cansend(s, joyframe)
+                null_frame_sent = True  # Set the flag to true after sending
+            else:
+                print("Skipping null frame to prevent buffer overflow")
+        else:
+            # Send non-null frames as usual
+            print("Sending frame:", joyframe)
+            cansend(s, joyframe)
+
+        # Update timing for the next frame
         nexttime += mintime
-        t= time()
+        t = time()
         if t < nexttime:
             sleep(nexttime - t)
         else:

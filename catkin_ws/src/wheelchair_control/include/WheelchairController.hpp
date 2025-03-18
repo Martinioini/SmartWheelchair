@@ -1,5 +1,5 @@
-#ifndef CANSENDER_HPP
-#define CANSENDER_HPP
+#ifndef WHEELCHAIRCONTROLLER_HPP
+#define WHEELCHAIRCONTROLLER_HPP
 
 #include <ros/ros.h>
 #include <sensor_msgs/Joy.h>
@@ -10,16 +10,16 @@
 #include "CANHandler.hpp"
 #include <string>
 
-class CANsender{
+class WheelchairController{
     // Define CAN interface (in my case always can0)
     private:
 
         const std::string CAN_INTERFACE = "can0";
         std::string RNET_JOYSTICK_ID = "02000000"; //static id for joystick frame
+        std::string RNET_SPEED_ID = "0a040100"; //id for speed frame
+
         CANHandler can_handler;
         ros::Subscriber joy_sub;
-
-    public:
 
         uint16_t joystick_x;
         uint16_t joystick_y;
@@ -27,18 +27,31 @@ class CANsender{
         const int X_THRESHOLD = 8 * 0x10000 / 128;
         const int Y_THRESHOLD = 8 * 0x10000 / 128;
 
-        CANsender(ros::NodeHandle& nh);
+        uint16_t speed;
 
-        ~CANsender();
+        ros::Time last_button_time_;
+        ros::Duration button_delay_ = ros::Duration(0.2); // in seconds
+
+    public:
+
+        
+
+        WheelchairController(ros::NodeHandle& nh);
+
+        ~WheelchairController();
 
         void injectRnetJoystickFrame();
+
+        void increaseSpeed();
+
+        void decreaseSpeed();
 
         void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
 
         void canFrameCallback(const can::Frame& frame);
 };
 
-#endif // CANSENDER_HPP
+#endif // WHEELCHAIRCONTROLLER_HPP
 
     
 
