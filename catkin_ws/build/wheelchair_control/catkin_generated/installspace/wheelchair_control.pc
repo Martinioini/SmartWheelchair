@@ -1,8 +1,0 @@
-prefix=/home/alessandro/WheelchairControl/catkin_ws/install
-
-Name: wheelchair_control
-Description: Description of wheelchair_control
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

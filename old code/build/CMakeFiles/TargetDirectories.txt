@@ -1,3 +1,0 @@
-/home/alessandro/WheelchairControl/old code/build/CMakeFiles/rebuild_cache.dir
-/home/alessandro/WheelchairControl/old code/build/CMakeFiles/edit_cache.dir
-/home/alessandro/WheelchairControl/old code/build/CMakeFiles/main.dir
