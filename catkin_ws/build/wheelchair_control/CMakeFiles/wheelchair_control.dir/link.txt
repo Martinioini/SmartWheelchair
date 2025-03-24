@@ -1,0 +1,1 @@
+/usr/lib/ccache/c++ -fPIC   -shared -Wl,-soname,libwheelchair_control.so -o /home/alessandro/WheelchairControl/catkin_ws/devel/lib/libwheelchair_control.so CMakeFiles/wheelchair_control.dir/src/WheelchairController.cpp.o CMakeFiles/wheelchair_control.dir/src/CANHandler.cpp.o 
