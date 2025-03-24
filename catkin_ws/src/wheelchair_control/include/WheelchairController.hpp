@@ -16,7 +16,7 @@ class WheelchairController{
 
         const std::string CAN_INTERFACE = "can0";
         std::string RNET_JOYSTICK_ID = "02000000"; //static id for joystick frame
-        std::string RNET_SPEED_ID = "0a040100"; //id for speed frame
+        std::string RNET_SPEED_ID = "0A040100"; //id for speed frame
 
         CANHandler can_handler;
         ros::Subscriber joy_sub;
@@ -32,6 +32,10 @@ class WheelchairController{
         ros::Time last_button_time_;
         ros::Duration button_delay_ = ros::Duration(0.2); // in seconds
 
+        ros::Rate loop_rate;
+
+        bool is_jailbreak_mode;
+
     public:
 
         
@@ -42,13 +46,19 @@ class WheelchairController{
 
         void injectRnetJoystickFrame();
 
+        void injectRNETjailbreakFrame();
+
         void increaseSpeed();
+
+        void spin();
 
         void decreaseSpeed();
 
         void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
 
         void canFrameCallback(const can::Frame& frame);
+
+        void restartController();
 };
 
 #endif // WHEELCHAIRCONTROLLER_HPP

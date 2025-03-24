@@ -1,9 +1,13 @@
 #include "../include/WheelchairController.hpp"
 
-WheelchairController::WheelchairController(ros::NodeHandle& nh) : can_handler(0) {
+WheelchairController::WheelchairController(ros::NodeHandle& nh) : can_handler(0), loop_rate(300) {
 
     joystick_x = 0x00;
     joystick_y = 0x00;
+
+    speed = 0;
+
+    is_jailbreak_mode = false;
 
     last_button_time_ = ros::Time::now();
     
@@ -43,6 +47,16 @@ void WheelchairController::decreaseSpeed(){
     can_handler.sendFrame(ss.str());
 }
 
+void WheelchairController::injectRNETjailbreakFrame(){
+    for(int i = 0; i < 3; i++)
+    {
+        can_handler.sendFrame("0c000000#");
+        loop_rate.sleep();
+    }
+
+    can_handler.sendFrame("181c0100#0260000000000000");
+}
+
 // Inject a spoofed joystick frame in the wheelchair
 void WheelchairController::injectRnetJoystickFrame() {
 
@@ -63,6 +77,19 @@ void WheelchairController::injectRnetJoystickFrame() {
     }
 }
 
+void WheelchairController::spin(){
+    while(ros::ok()){
+        ros::spinOnce();
+        loop_rate.sleep();
+    }
+}
+
+void WheelchairController::restartController(){
+    ROS_INFO("Restarting program");
+    std::string command ="rosnode kill /wheelchair_controller && sleep 3 && roslaunch wheelchair_control real_wheelchair.launch"; 
+    system(command.c_str());
+}
+
 // Callback for joystick messages
 void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
 
@@ -77,7 +104,20 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
        }
        last_button_time_ = ros::Time::now();
    }
-    
+
+   if (msg->buttons[7] == 1) {
+       if(!is_jailbreak_mode){
+           injectRNETjailbreakFrame();
+           ROS_INFO("Injecting jailbreak frame, restart wheelchair to restore functionality");
+           is_jailbreak_mode = true;
+           ros::Rate loop_rate(100);
+       }  
+   }
+
+   if(msg->buttons[6] == 1){
+       restartController();
+   }
+   
     float x_axis = msg->axes[0];  // Left stick horizontal (-1 to 1)
     float y_axis = msg->axes[1];  // Left stick vertical (-1 to 1)
     
@@ -126,12 +166,7 @@ int main(int argc, char** argv) {
     
     ROS_INFO("Wheelchair controller started. Listening for joystick input...");
     
-    ros::Rate loop_rate(300); // 100 Hz 
-    
-    while (ros::ok()) {
-        // Process callbacks
-        ros::spinOnce();
-        loop_rate.sleep();
-    }
+    wheelchair_controller.spin();
+
     return 0;
 }

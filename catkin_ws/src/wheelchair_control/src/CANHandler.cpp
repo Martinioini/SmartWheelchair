@@ -10,6 +10,7 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <fcntl.h>    // For fcntl, F_GETFL, F_SETFL, O_NONBLOCK
 #include <ros/ros.h>
 
 CANHandler::CANHandler() : socketFd_(-1) {
@@ -201,24 +202,21 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
         
         if (nbytes != sizeof(struct can_frame)) {
             ROS_ERROR_STREAM("Error sending CAN frame " << frameStr << ": " << strerror(errno));
+            restartInterface();
             
             // If the socket is bad, close it and try to reopen
-            if (errno == EBADF) {
-                close(socketFd_);
-                socketFd_ = -1;
-                if (!openSocket(0)) {
-                    ROS_ERROR("Failed to reopen CAN socket after bad file descriptor");
-                    return false;
-                }
-                ROS_INFO("Successfully reopened CAN socket after bad file descriptor");
-                
-                // Try sending again with the new socket
-                nbytes = write(socketFd_, &frame, sizeof(struct can_frame));
-                if (nbytes != sizeof(struct can_frame)) {
-                    ROS_ERROR_STREAM("Error sending CAN frame after socket reopen: " << strerror(errno));
-                    return false;
-                }
-            } else {
+            close(socketFd_);
+            socketFd_ = -1;
+            if (!openSocket(0)) {
+                ROS_ERROR("Failed to reopen CAN socket after bad file descriptor");
+                return false;
+            }
+            ROS_INFO("Successfully reopened CAN socket after bad file descriptor");
+            
+            // Try sending again with the new socket
+            nbytes = write(socketFd_, &frame, sizeof(struct can_frame));
+            if (nbytes != sizeof(struct can_frame)) {
+                ROS_ERROR_STREAM("Error sending CAN frame after socket reopen: " << strerror(errno));
                 return false;
             }
         }
@@ -230,4 +228,10 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
         ROS_ERROR_STREAM("Exception while sending CAN frame: " << e.what());
         return false;
     }
+}
+
+void CANHandler::restartInterface(){
+    system("sudo ip link set can0 down");
+    system("sudo ip link set can0 up type can bitrate 500000"); // Adjust bitrate as needed
+    ROS_INFO("CAN interface reset");
 }

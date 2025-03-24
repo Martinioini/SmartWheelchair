@@ -18,6 +18,8 @@ public:
     // Destructor
     ~CANHandler();
 
+    void restartInterface();
+    void flushCANBuffer();
     bool openSocket(int canNum);
     struct can_frame buildFrame(const std::string& canStr);
     bool sendFrame(const std::string& frameStr);
