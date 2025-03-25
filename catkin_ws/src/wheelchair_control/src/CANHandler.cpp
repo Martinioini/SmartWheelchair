@@ -202,11 +202,12 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
         
         if (nbytes != sizeof(struct can_frame)) {
             ROS_ERROR_STREAM("Error sending CAN frame " << frameStr << ": " << strerror(errno));
-            restartInterface();
-            
-            // If the socket is bad, close it and try to reopen
             close(socketFd_);
             socketFd_ = -1;
+            flushCANBuffer();
+            
+            // If the socket is bad, close it and try to reopen
+            
             if (!openSocket(0)) {
                 ROS_ERROR("Failed to reopen CAN socket after bad file descriptor");
                 return false;
@@ -221,7 +222,6 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
             }
         }
         
-        ROS_DEBUG_STREAM("Successfully sent CAN frame: " << frameStr);
         return true;
     }
     catch (const std::exception& e) {
@@ -230,8 +230,25 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
     }
 }
 
-void CANHandler::restartInterface(){
-    system("sudo ip link set can0 down");
-    system("sudo ip link set can0 up type can bitrate 500000"); // Adjust bitrate as needed
-    ROS_INFO("CAN interface reset");
+void CANHandler::flushCANBuffer() {
+    struct can_frame frame;
+    int nbytes;
+
+    // Set the socket to non-blocking mode temporarily
+    int flags = fcntl(socketFd_, F_GETFL, 0);
+    fcntl(socketFd_, F_SETFL, flags | O_NONBLOCK);
+
+    // Read and discard frames until the buffer is empty
+    while ((nbytes = read(socketFd_, &frame, sizeof(struct can_frame))) > 0) {
+        // Discard the frame
+    }
+
+    // Restore original socket flags
+    fcntl(socketFd_, F_SETFL, flags);
+
+    if (nbytes < 0 && errno != EAGAIN) {
+        ROS_ERROR_STREAM("Error flushing CAN buffer: " << strerror(errno));
+    } else {
+        ROS_DEBUG_STREAM("CAN buffer flushed");
+    }
 }

@@ -53,8 +53,16 @@ void WheelchairController::injectRNETjailbreakFrame(){
         can_handler.sendFrame("0c000000#");
         loop_rate.sleep();
     }
-
+    is_jailbreak_mode = true;
+    loop_rate = ros::Rate(100);
     can_handler.sendFrame("181c0100#0260000000000000");
+}
+
+void WheelchairController::disableJailbreakMode(){
+    is_jailbreak_mode = false;
+    loop_rate = ros::Rate(300);
+    can_handler.sendFrame("181c0100#0260000000000000");
+    can_handler.sendFrame("000#R");
 }
 
 // Inject a spoofed joystick frame in the wheelchair
@@ -71,7 +79,7 @@ void WheelchairController::injectRnetJoystickFrame() {
     
     // Send the frame
     if (can_handler.sendFrame(canStr)) {
-        ROS_DEBUG("Frame sent successfully");
+        ROS_DEBUG_STREAM("Frame sent successfully");
     } else {
         ROS_WARN("Failed to send CAN frame");
     }
@@ -82,12 +90,6 @@ void WheelchairController::spin(){
         ros::spinOnce();
         loop_rate.sleep();
     }
-}
-
-void WheelchairController::restartController(){
-    ROS_INFO("Restarting program");
-    std::string command ="rosnode kill /wheelchair_controller && sleep 3 && roslaunch wheelchair_control real_wheelchair.launch"; 
-    system(command.c_str());
 }
 
 // Callback for joystick messages
@@ -102,21 +104,19 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
            decreaseSpeed();
            ROS_INFO("Decreasing speed");
        }
+       else if (msg->buttons[7] == 1) {
+           injectRNETjailbreakFrame();
+           ROS_INFO("Injecting jailbreak frame, restart wheelchair to restore functionality");
+       }
+       if(msg->buttons[6] == 1){
+            disableJailbreakMode();
+            ROS_INFO("Disabling jailbreak mode");
+       }
+
        last_button_time_ = ros::Time::now();
    }
 
-   if (msg->buttons[7] == 1) {
-       if(!is_jailbreak_mode){
-           injectRNETjailbreakFrame();
-           ROS_INFO("Injecting jailbreak frame, restart wheelchair to restore functionality");
-           is_jailbreak_mode = true;
-           ros::Rate loop_rate(100);
-       }  
-   }
-
-   if(msg->buttons[6] == 1){
-       restartController();
-   }
+   
    
     float x_axis = msg->axes[0];  // Left stick horizontal (-1 to 1)
     float y_axis = msg->axes[1];  // Left stick vertical (-1 to 1)
@@ -145,8 +145,8 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
         new_y = 0;
     }
     
-    // If the joystick is not moving, don't send a frame
-    if(new_x == 0 && new_y == 0 && joystick_x == 0 && joystick_y == 0){
+    //If the joystick is not moving, don't send a frame
+    if(new_x == 0 && new_y == 0 && joystick_x == 0 && joystick_y == 0 && !is_jailbreak_mode){
         return;
     }
 
@@ -160,7 +160,9 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
 int main(int argc, char** argv) {
     ros::init(argc, argv, "wheelchair_controller");
     ros::NodeHandle nh;
-    
+
+    ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug);
+    ros::console::notifyLoggerLevelsChanged();
     // Initialize CAN interface
     WheelchairController wheelchair_controller(nh);
     

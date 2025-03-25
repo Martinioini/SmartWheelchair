@@ -58,7 +58,7 @@ class WheelchairController{
 
         void canFrameCallback(const can::Frame& frame);
 
-        void restartController();
+        void disableJailbreakMode();
 };
 
 #endif // WHEELCHAIRCONTROLLER_HPP

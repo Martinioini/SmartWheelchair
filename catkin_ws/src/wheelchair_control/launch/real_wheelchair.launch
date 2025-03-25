@@ -9,5 +9,6 @@
   <node name="wheelchair_controller" pkg="wheelchair_control" type="wheelchair_controller" output="screen" required="true">
     <!-- Set CAN interface parameter for real hardware -->
     <param name="can_interface" value="can0"/>
+    <param name="rosconsole_logger_level" value="DEBUG"/>
   </node>
 </launch> 
