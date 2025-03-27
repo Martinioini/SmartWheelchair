@@ -123,6 +123,7 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/WheelchairController.cpp
   src/CANHandler.cpp
+  src/ControllerHandler.cpp
   # ... other source files ...
 )
 
