@@ -75,33 +75,39 @@ void ControllerHandler::setJoystick(float x, float y){
 
 void ControllerHandler::rnetSetMode(bool mode){
     
-    int prev_mode = this->mode;
+    uint8_t prev_mode = this->mode;
 
     if((mode && prev_mode == numModes - 1) || (!mode && prev_mode == 0)){
         return;
     }
 
-    std::stringstream ss;
-    ss << "061#400" << std::setfill('0') << std::setw(1) << std::hex << prev_mode << "0000";
-    can_handler.sendFrame(ss.str());
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    
     std::stringstream ss2;
     if(mode){
-        ss2 << "061#000" << std::setfill('0') << std::setw(2) << std::hex << (this->mode + 1) << "0000";
+        ss2 << "061#000" << std::setfill('0') << std::setw(2) << std::hex <<(prev_mode + 1) << "0000";
         this->mode++;
     }
     else{
-        ss2 << "061#000" << std::setfill('0') << std::setw(2) << std::hex << (this->mode - 1) << "0000";
+        ss2 << "061#000" << std::setfill('0') << std::setw(2) << std::hex << (prev_mode - 1) << "0000";
         this->mode--;
     }
     ROS_INFO("Sending CAN frame: %s", ss2.str().c_str());
     can_handler.sendFrame(ss2.str());
 }
 
+void ControllerHandler::rnetRemoveMode(bool mode){
+    
+    uint8_t prev_mode = this->mode;
+
+    if((mode && prev_mode == numModes - 1) || (!mode && prev_mode == 0)){
+        return;
+    }
+    std::stringstream ss;
+    ss << "061#400" << std::setfill('0') << std::setw(1) << std::hex << 0 << "0000";
+    can_handler.sendFrame(ss.str());
+}
+
 void ControllerHandler::setProfile(bool profile){
-     int prev_profile = this->profile;
+     uint8_t prev_profile = this->profile;
 
      if(profile && prev_profile == numProfiles - 1 || !profile && prev_profile == 0){
         return;

@@ -64,6 +64,7 @@ public:
     void disableJailbreakMode();
     void setProfile(bool profile);
     void rnetSetMode(bool mode);
+    void rnetRemoveMode(bool mode);
 };
 
 #endif // CONTROLLERHANDLER_HPP
