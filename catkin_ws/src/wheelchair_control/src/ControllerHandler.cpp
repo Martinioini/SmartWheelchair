@@ -26,12 +26,10 @@ void ControllerHandler::injectRnetJoystickFrame() {
     ss << std::setfill('0') << std::setw(2) << std::hex << static_cast<int>(joystick_y);
     
     std::string canStr = ss.str();
-    
-    //ROS_INFO("Sending CAN frame: %s", canStr.c_str());
-    
+        
     // Send the frame
     if (can_handler.sendFrame(canStr)) {
-        //ROS_DEBUG_STREAM("Frame sent successfully");
+        ROS_DEBUG_STREAM("Frame sent successfully");
     } else {
         ROS_WARN("Failed to send CAN frame");
     }
@@ -75,23 +73,16 @@ void ControllerHandler::setJoystick(float x, float y){
 
 void ControllerHandler::rnetSetMode(bool mode){
     
-    uint8_t prev_mode = this->mode;
-
-    if((mode && prev_mode == numModes - 1) || (!mode && prev_mode == 0)){
-        return;
-    }
-
-    std::stringstream ss2;
-    if(mode){
-        ss2 << "061#000" << std::setfill('0') << std::setw(2) << std::hex <<(prev_mode + 1) << "0000";
-        this->mode++;
-    }
-    else{
-        ss2 << "061#000" << std::setfill('0') << std::setw(2) << std::hex << (prev_mode - 1) << "0000";
-        this->mode--;
-    }
-    ROS_INFO("Sending CAN frame: %s", ss2.str().c_str());
-    can_handler.sendFrame(ss2.str());
+    can_handler.sendFrame("060#40300000");
+    can_handler.sendFrame("062#50000002");
+    can_handler.sendFrame("062#60000000");
+    can_handler.sendFrame("062#70000009");
+    can_handler.sendFrame("062#80000010");
+    can_handler.sendFrame("060#00010000");
+    can_handler.sendFrame("062#10010002");
+    can_handler.sendFrame("062#20010000");
+    can_handler.sendFrame("061#30010001");
+    can_handler.sendFrame("062#80010080");
 }
 
 void ControllerHandler::rnetRemoveMode(bool mode){
@@ -102,7 +93,7 @@ void ControllerHandler::rnetRemoveMode(bool mode){
         return;
     }
     std::stringstream ss;
-    ss << "061#400" << std::setfill('0') << std::setw(1) << std::hex << 0 << "0000";
+    ss << "061#404" << std::setfill('0') << std::setw(1) << std::hex << 0 << "0000";
     can_handler.sendFrame(ss.str());
 }
 
