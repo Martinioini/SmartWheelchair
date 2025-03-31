@@ -27,22 +27,17 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
        }
        //button Lb
        else if (msg->buttons[6] == 1) {
-           //controller_handler.rnetRemoveMode(false);
-           //ros::Duration(0.1).sleep();
-           controller_handler.rnetSetMode(false);
-           ROS_INFO("Decreasing mode");
+           ROS_INFO("Playing horn");
+           controller_handler.setHorn();
+           ros::Duration(1).sleep();
+           controller_handler.disableHorn();
        }
-       //button Rb
-       else if (msg->buttons[7] == 1) {
-           //controller_handler.rnetRemoveMode(true);
-           //ros::Duration(0.1).sleep();
-           controller_handler.rnetSetMode(true);
-           ROS_INFO("Increasing mode");
-       }
+
        else if (msg->buttons[4] == 1) {
            controller_handler.setProfile(false);
            ROS_INFO("Decreasing profile");
        }
+
        else if (msg->buttons[5] == 1) {
            controller_handler.setProfile(true);
            ROS_INFO("Increasing profile");

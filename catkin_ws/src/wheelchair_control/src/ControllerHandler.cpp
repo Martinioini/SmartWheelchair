@@ -29,9 +29,9 @@ void ControllerHandler::injectRnetJoystickFrame() {
         
     // Send the frame
     if (can_handler.sendFrame(canStr)) {
-        ROS_DEBUG_STREAM("Frame sent successfully");
+        std::cout << "Frame sent successfully" << std::endl;
     } else {
-        ROS_WARN("Failed to send CAN frame");
+        std::cerr << "Failed to send CAN frame" << std::endl;
     }
 }
 
@@ -71,32 +71,6 @@ void ControllerHandler::setJoystick(float x, float y){
     injectRnetJoystickFrame();
 }
 
-void ControllerHandler::rnetSetMode(bool mode){
-    
-    can_handler.sendFrame("060#40300000");
-    can_handler.sendFrame("062#50000002");
-    can_handler.sendFrame("062#60000000");
-    can_handler.sendFrame("062#70000009");
-    can_handler.sendFrame("062#80000010");
-    can_handler.sendFrame("060#00010000");
-    can_handler.sendFrame("062#10010002");
-    can_handler.sendFrame("062#20010000");
-    can_handler.sendFrame("061#30010001");
-    can_handler.sendFrame("062#80010080");
-}
-
-void ControllerHandler::rnetRemoveMode(bool mode){
-    
-    uint8_t prev_mode = this->mode;
-
-    if((mode && prev_mode == numModes - 1) || (!mode && prev_mode == 0)){
-        return;
-    }
-    std::stringstream ss;
-    ss << "061#404" << std::setfill('0') << std::setw(1) << std::hex << 0 << "0000";
-    can_handler.sendFrame(ss.str());
-}
-
 void ControllerHandler::setProfile(bool profile){
      uint8_t prev_profile = this->profile;
 
@@ -113,8 +87,25 @@ void ControllerHandler::setProfile(bool profile){
         ss << "051#000" << std::setfill('0') << std::setw(1) << std::hex << (this->profile - 1) << "0000";
         this->profile--;
      }
-     ROS_INFO("Sending CAN frame: %s", ss.str().c_str());
+     std::cout << "Sending CAN frame: " << ss.str() << std::endl;
      can_handler.sendFrame(ss.str());
+}
+
+void ControllerHandler::setSpeed(uint16_t s){
+    if(s > 100 || s < 0){
+        return;
+    }
+    std::stringstream ss;
+    ss << RNET_SPEED_ID << "#" << std::setfill('0') << std::setw(2) << std::hex << s;
+    can_handler.sendFrame(ss.str());
+}
+
+void ControllerHandler::setHorn(){
+    can_handler.sendFrame("0C040100#");
+}
+
+void ControllerHandler::disableHorn(){
+    can_handler.sendFrame("0C040101#");
 }
 
 void ControllerHandler::injectRNETjailbreakFrame() {

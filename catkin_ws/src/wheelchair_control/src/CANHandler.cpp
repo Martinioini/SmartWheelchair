@@ -11,24 +11,23 @@
 #include <vector>
 #include <iomanip>
 #include <fcntl.h>    // For fcntl, F_GETFL, F_SETFL, O_NONBLOCK
-#include <ros/ros.h>
 
 CANHandler::CANHandler() : socketFd_(-1) {
     // Default constructor - initialize with bus 0
     if(openSocket(0)){
-        ROS_INFO("CAN interface initialized successfully");
+        std::cout << "CAN interface initialized successfully" << std::endl;
     }
     else{
-        ROS_ERROR("Failed to initialize CAN interface");
+        std::cerr << "Failed to initialize CAN interface" << std::endl;
     }
 }
 
 CANHandler::CANHandler(int busNum) : socketFd_(-1) {
     if(openSocket(busNum)){
-        ROS_INFO("CAN interface initialized successfully");
+        std::cout << "CAN interface initialized successfully" << std::endl;
     }
     else{
-        ROS_ERROR("Failed to initialize CAN interface");
+        std::cerr << "Failed to initialize CAN interface" << std::endl;
     }
 }
 
@@ -50,7 +49,7 @@ bool CANHandler::openSocket(int canNum) {
     // Create CAN socket
     socketFd_ = socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (socketFd_ < 0) {
-        ROS_ERROR_STREAM("Error creating socket: " << strerror(errno));
+        std::cerr << "Error creating socket: " << strerror(errno) << std::endl;
         return false;
     }
     int buffer_size = 1024 * 1024; // Increase buffer size to 500 KB
@@ -68,15 +67,15 @@ bool CANHandler::openSocket(int canNum) {
         std::string vcanInterface = "vcan" + std::to_string(canNum);
         strcpy(ifr.ifr_name, vcanInterface.c_str());
         if (ioctl(socketFd_, SIOCGIFINDEX, &ifr) < 0) {
-            ROS_ERROR_STREAM("Failed to open " << canInterface << " and " << vcanInterface 
-                            << ": " << strerror(errno));
+            std::cerr << "Failed to open " << canInterface << " and " << vcanInterface 
+                      << ": " << strerror(errno) << std::endl;
             close(socketFd_);
             socketFd_ = -1;
             return false;
         }
-        ROS_INFO_STREAM("Connected to " << vcanInterface);
+        std::cout << "Connected to " << vcanInterface << std::endl;
     } else {
-        ROS_INFO_STREAM("Connected to " << canInterface);
+        std::cout << "Connected to " << canInterface << std::endl;
     }
 
     // Bind the socket to the CAN interface
@@ -86,13 +85,13 @@ bool CANHandler::openSocket(int canNum) {
     addr.can_ifindex = ifr.ifr_ifindex;
 
     if (bind(socketFd_, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        ROS_ERROR_STREAM("Error binding socket: " << strerror(errno));
+        std::cerr << "Error binding socket: " << strerror(errno) << std::endl;
         close(socketFd_);
         socketFd_ = -1;
         return false;
     }
 
-    ROS_INFO("CAN socket opened successfully");
+    std::cout << "CAN socket opened successfully" << std::endl;
     return true;
 } 
 
@@ -103,7 +102,7 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
     // Check for '#' delimiter
     size_t delimiter = canStr.find('#');
     if (delimiter == std::string::npos) {
-        ROS_ERROR("buildFrame: missing #");
+        std::cerr << "buildFrame: missing #" << std::endl;
         return frame;
     }
 
@@ -124,7 +123,7 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
             frame.can_id = id | CAN_EFF_FLAG;  // Set extended frame flag
         } 
         else {
-            ROS_ERROR("Invalid ID length");
+            std::cerr << "Invalid ID length" << std::endl;
             return frame;
         }
 
@@ -142,7 +141,7 @@ struct can_frame CANHandler::buildFrame(const std::string& canStr) {
         }
     }
     catch (const std::exception& e) {
-        ROS_ERROR_STREAM("Error parsing CAN frame: " << e.what());
+        std::cerr << "Error parsing CAN frame: " << e.what() << std::endl;
         frame = {0};
     }
 
@@ -183,14 +182,14 @@ std::string CANHandler::dissectFrame(const can_frame& frame) {
 
 bool CANHandler::sendFrame(const std::string& frameStr) {
     if (socketFd_ < 0) {
-        ROS_ERROR("Cannot send frame: socket not initialized");
+        std::cerr << "Cannot send frame: socket not initialized" << std::endl;
         
         // Try to reopen the socket
         if (!openSocket(0)) {
-            ROS_ERROR("Failed to reopen CAN socket");
+            std::cerr << "Failed to reopen CAN socket" << std::endl;
             return false;
         }
-        ROS_INFO("Successfully reopened CAN socket");
+        std::cout << "Successfully reopened CAN socket" << std::endl;
     }
     
     try {
@@ -201,7 +200,7 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
         ssize_t nbytes = write(socketFd_, &frame, sizeof(struct can_frame));
         
         if (nbytes != sizeof(struct can_frame)) {
-            ROS_ERROR_STREAM("Error sending CAN frame " << frameStr << ": " << strerror(errno));
+            std::cerr << "Error sending CAN frame " << frameStr << ": " << strerror(errno) << std::endl;
             close(socketFd_);
             socketFd_ = -1;
             flushCANBuffer();
@@ -209,15 +208,15 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
             // If the socket is bad, close it and try to reopen
             
             if (!openSocket(0)) {
-                ROS_ERROR("Failed to reopen CAN socket after bad file descriptor");
+                std::cerr << "Failed to reopen CAN socket after bad file descriptor" << std::endl;
                 return false;
             }
-            ROS_INFO("Successfully reopened CAN socket after bad file descriptor");
+            std::cout << "Successfully reopened CAN socket after bad file descriptor" << std::endl;
             
             // Try sending again with the new socket
             nbytes = write(socketFd_, &frame, sizeof(struct can_frame));
             if (nbytes != sizeof(struct can_frame)) {
-                ROS_ERROR_STREAM("Error sending CAN frame after socket reopen: " << strerror(errno));
+                std::cerr << "Error sending CAN frame after socket reopen: " << strerror(errno) << std::endl;
                 return false;
             }
         }
@@ -225,7 +224,7 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
         return true;
     }
     catch (const std::exception& e) {
-        ROS_ERROR_STREAM("Exception while sending CAN frame: " << e.what());
+        std::cerr << "Exception while sending CAN frame: " << e.what() << std::endl;
         return false;
     }
 }
@@ -247,8 +246,8 @@ void CANHandler::flushCANBuffer() {
     fcntl(socketFd_, F_SETFL, flags);
 
     if (nbytes < 0 && errno != EAGAIN) {
-        ROS_ERROR_STREAM("Error flushing CAN buffer: " << strerror(errno));
+        std::cerr << "Error flushing CAN buffer: " << strerror(errno) << std::endl;
     } else {
-        ROS_DEBUG_STREAM("CAN buffer flushed");
+        std::cout << "CAN buffer flushed" << std::endl;
     }
 }
