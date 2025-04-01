@@ -30,7 +30,7 @@ The entire CAN and R-Net communication is handled by two cpp classes (Controller
 ## Installation
 
 ### 1. ROS Noetic
-Ensure ROS Noetic is installed on your system. If not, follow the [official ROS installation guide](http://wiki.ros.org/noetic/Installation/Ubuntu).
+Ensure Ubuntu and ROS Noetic are installed on the pi. If not, follow the [official ROS installation guide](http://wiki.ros.org/noetic/Installation/Ubuntu).
 
 ### 2. CAN Utils
 Install the can-utils package:
@@ -50,7 +50,15 @@ catkin_make
 
 ## CAN Interface Setup
 
-### 1. Configure CAN interface
+### 1. R-Net Wiring Pinout to CAN interface
+Strip a R-Net wire in half.
+Connect the wire with this pinout:
+- White is CAN High
+- Blue is CAN Low
+- Black is GND
+- Red is +Vin
+
+### 2. Configure CAN interface
 Set up the CAN interface with the correct bitrate (125000 in my case):
 
 ```bash
@@ -58,13 +66,7 @@ sudo ip link set can0 type can bitrate 125000
 sudo ip link set up can0
 ```
 
-### 2. R-Net Wiring Pinout to CAN interface
-Strip a R-Net wire in half.
-Connect the wire with this pinout:
-- White is CAN High
-- Blue is CAN Low
-- Black is GND
-- Red is +Vin
+
 
 ### 3. Test CAN communication
 You can test if your CAN interface is working properly using can-utils:
