@@ -12,6 +12,9 @@ This project provides an interface for CAN bus communication and rnet electronic
 - Support for standard CAN protocols
 - Easy-to-use interface for sending and receiving CAN messages in string format
 
+## Communication library
+The entire CAN and R-Net communication is handled by two cpp classes (ControllerHandler and CANHandler) that are completely independent from ROS. So if you want to use this library in another project, you can do so by just using these two classes. The WheelchairController class is the main class that handles the ROS interface and is used to receive data from the controller through the joy node.
+
 ## Hardware Requirements
 - Raspberry Pi (3B+ or 4 recommended)
 - USB-to-CAN adapter (such as CANable, PCAN-USB, or similar CAN interface)
