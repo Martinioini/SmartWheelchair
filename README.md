@@ -101,8 +101,5 @@ Below is the layout of the controller used for wheelchair control:
 - Verify that your USB-to-CAN adapter is properly recognized with `dmesg | grep can`
 - Ensure the correct bitrate is set for your CAN network
 
-## License
-[Your license information here]
-
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.
