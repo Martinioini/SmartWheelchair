@@ -74,6 +74,11 @@ source ~/catkin_ws/devel/setup.bash
 roslaunch wheelchair_control real_wheelchair.launch 
 ```
 
+## Controller Layout
+Below is the layout of the controller used for wheelchair control:
+
+![Controller Layout](Controller_layout.png)
+
 ## Troubleshooting
 - If the CAN interface doesn't come up, check your hardware connections
 - Verify that your USB-to-CAN adapter is properly recognized with `dmesg | grep can`
