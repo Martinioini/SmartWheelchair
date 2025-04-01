@@ -1,4 +1,7 @@
-# CAN Interface Project
+# CAN to R-Net control Project
+
+## Inspiration
+This project was inspired by the work done in [can2RNET](https://github.com/redragonx/can2RNET)
 
 ## Overview
 This project provides an interface for CAN bus communication and rnet electronics wheelchair, allowing to control a rnet wheelchair with an xbox like controller.
@@ -14,6 +17,7 @@ This project provides an interface for CAN bus communication and rnet electronic
 - USB-to-CAN adapter (such as CANable, PCAN-USB, or similar CAN interface)
 - CAN devices for communication
 - Xbox like controller
+
 ## Software Requirements
 - Ubuntu 20.04
 - ROS Noetic
@@ -44,14 +48,22 @@ catkin_make
 ## CAN Interface Setup
 
 ### 1. Configure CAN interface
-Set up the CAN interface with a bitrate of 125000:
+Set up the CAN interface with the correct bitrate (125000 in my case):
 
 ```bash
 sudo ip link set can0 type can bitrate 125000
 sudo ip link set up can0
 ```
 
-### 2. Test CAN communication
+### 2. R-Net Wiring Pinout to CAN interface
+Strip a R-Net wire in half.
+Connect the wire with this pinout:
+- White is CAN High
+- Blue is CAN Low
+- Black is GND
+- Red is +Vin
+
+### 3. Test CAN communication
 You can test if your CAN interface is working properly using can-utils:
 
 ```bash
