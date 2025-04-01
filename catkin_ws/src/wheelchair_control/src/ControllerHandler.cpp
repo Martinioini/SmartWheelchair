@@ -121,6 +121,13 @@ void ControllerHandler::injectRNETjailbreakFrame() {
 
 void ControllerHandler::disableJailbreakMode(){
     is_jailbreak_mode = false;
+    this->profile = 0;
+    std::stringstream ss;
+    
+    ss << "051#000" << std::setfill('0') << std::setw(1) << std::hex << this->profile << "0000";
+
+    can_handler.sendFrame(ss.str());
+    
     can_handler.sendFrame("181c0100#0260000000000000");
     can_handler.sendFrame("000#R");
 }

@@ -33,8 +33,6 @@ private:
 
     bool is_jailbreak_mode;                         ///< Flag for jailbreak mode status
 
-    uint8_t mode;                                   ///< Current mode setting
-
     uint8_t profile;                                ///< Current profile setting
 
 public:
