@@ -26,21 +26,23 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
            ROS_INFO("Decreasing speed");
        }
        //button Lb
-       else if (msg->buttons[6] == 1) {
+       else if (msg->buttons[4] == 1) {
            ROS_INFO("Playing horn");
            controller_handler.setHorn();
            ros::Duration(1).sleep();
            controller_handler.disableHorn();
        }
 
-       else if (msg->buttons[4] == 1) {
+       else if (msg->buttons[6] == 1) {
            controller_handler.setProfile(false);
+           ros::Duration(0.3).sleep();
            ROS_INFO("Decreasing profile");
        }
 
-       else if (msg->buttons[5] == 1) {
+       else if (msg->buttons[7] == 1) {
            controller_handler.setProfile(true);
            ROS_INFO("Increasing profile");
+           ros::Duration(0.3).sleep();
        }
        last_button_time_ = ros::Time::now();
    }

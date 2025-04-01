@@ -8,6 +8,8 @@ ControllerHandler::ControllerHandler() : can_handler(0) {
 
     is_jailbreak_mode = false;
 
+    profile = 0;
+
     injectRnetJoystickFrame();
     injectRNETjailbreakFrame();
     
@@ -29,7 +31,6 @@ void ControllerHandler::injectRnetJoystickFrame() {
         
     // Send the frame
     if (can_handler.sendFrame(canStr)) {
-        std::cout << "Frame sent successfully" << std::endl;
     } else {
         std::cerr << "Failed to send CAN frame" << std::endl;
     }
@@ -73,20 +74,30 @@ void ControllerHandler::setJoystick(float x, float y){
 
 void ControllerHandler::setProfile(bool profile){
      uint8_t prev_profile = this->profile;
+     uint8_t new_profile;
 
-     if(profile && prev_profile == numProfiles - 1 || !profile && prev_profile == 0){
-        return;
-     }
-
-     std::stringstream ss;
      if(profile){
-        ss << "051#000" << std::setfill('0') << std::setw(1) << std::hex << (this->profile + 1) << "0000";
-        this->profile++;
+        // If at max profile, wrap around to 0
+        if(prev_profile == numProfiles - 1){
+            new_profile = 0;
+        } else {
+            new_profile = prev_profile + 1;
+        }
      }
      else{
-        ss << "051#000" << std::setfill('0') << std::setw(1) << std::hex << (this->profile - 1) << "0000";
-        this->profile--;
+        // If at profile 0, wrap around to max profile
+        if(prev_profile == 0){
+            new_profile = numProfiles - 1;
+        } else {
+            new_profile = prev_profile - 1;
+        }
      }
+
+     this->profile = new_profile;
+     
+     std::stringstream ss;
+     ss << "051#000" << std::setfill('0') << std::setw(1) << std::hex << static_cast<int>(this->profile) << "0000";
+     
      std::cout << "Sending CAN frame: " << ss.str() << std::endl;
      can_handler.sendFrame(ss.str());
 }
