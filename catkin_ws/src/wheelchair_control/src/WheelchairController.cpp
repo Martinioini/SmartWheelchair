@@ -25,13 +25,6 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
            controller_handler.decreaseSpeed();
            ROS_INFO("Decreasing speed");
        }
-       //button Lb
-       else if (msg->buttons[4] == 1) {
-           ROS_INFO("Playing horn");
-           controller_handler.setHorn();
-           ros::Duration(1).sleep();
-           controller_handler.disableHorn();
-       }
 
        else if (msg->buttons[6] == 1) {
            controller_handler.setProfile(false);
