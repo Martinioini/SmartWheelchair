@@ -25,6 +25,11 @@ void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
            controller_handler.decreaseSpeed();
            ROS_INFO("Decreasing speed");
        }
+       //button Lb
+       else if (msg->buttons[4] == 1) {
+           ROS_INFO("Turning off");
+           controller_handler.disableJailbreakMode();
+       }
 
        else if (msg->buttons[6] == 1) {
            controller_handler.setProfile(false);
