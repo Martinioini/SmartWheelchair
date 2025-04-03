@@ -14,6 +14,9 @@ jobs:
 
       - name: Install Doxygen
         run: sudo apt-get install -y doxygen graphviz
+        
+      - name: Ensure docs directory exists
+        run: mkdir -p catkin_ws/docs
 
       - name: Generate Documentation
         run: doxygen catkin_ws/Doxyfile  # Update if your Doxyfile path is different
