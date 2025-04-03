@@ -55,11 +55,10 @@ void ControllerHandler::setJoystick(float x, float y){
         new_x = 0;
     }
 
-    // Process Y axis - INVERT the Y value 
+    // Process Y axis 
     if(std::abs(y_value) > Y_THRESHOLD){
 
-        int16_t inverted_y = -y_value;
-        new_y = (0x100 - static_cast<int>(inverted_y * 100.0 / 128.0)) >> 8 & 0xFF;
+        new_y = (0x100 - static_cast<int>(y_value * 100.0 / 128.0)) >> 8 & 0xFF;
     }
     else{
         new_y = 0;
