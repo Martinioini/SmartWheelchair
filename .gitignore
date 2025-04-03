@@ -2,6 +2,10 @@
 build/
 devel/
 install/
+docs/
+html/
+latex/
+
 
 # Ignore logs and cache
 log/
