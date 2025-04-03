@@ -2,9 +2,9 @@
 build/
 devel/
 install/
-docs/
-html/
-latex/
+catkin_ws/docs/html/
+catkin_ws/docs/latex/
+
 
 
 # Ignore logs and cache
