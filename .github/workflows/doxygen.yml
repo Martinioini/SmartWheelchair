@@ -1,0 +1,25 @@
+name: Generate Doxygen Documentation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  doxygen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Doxygen
+        run: sudo apt-get install -y doxygen graphviz
+
+      - name: Generate Documentation
+        run: doxygen catkin_ws/Doxyfile  # Update if your Doxyfile path is different
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: catkin_ws/docs/html  # Make sure this is your actual output directory
