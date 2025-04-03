@@ -25,4 +25,4 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: catkin_ws/docs/html  # Make sure this is your actual output directory
+          folder: catkin_ws/docs  # Make sure this is your actual output directory
