@@ -16,10 +16,10 @@ jobs:
         run: sudo apt-get install -y doxygen graphviz
 
       - name: Generate Documentation
-        run: doxygen catkin_ws/Doxyfile  # Update if your Doxyfile path is different
+        run: doxygen catkin_ws/Doxyfile 
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: catkin_ws/docs  # Make sure this is your actual output directory
+          folder: catkin_ws/docs  
