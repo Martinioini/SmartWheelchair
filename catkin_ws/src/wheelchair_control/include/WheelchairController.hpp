@@ -2,17 +2,18 @@
 #define WHEELCHAIRCONTROLLER_HPP
 
 #include <ros/ros.h>
-#include <sensor_msgs/Joy.h>
+#include <geometry_msgs/Twist.h>
+#include <std_msgs/Int8.h>
 #include <functional>
 #include "ControllerHandler.hpp"
 #include <string>
 
 /**
  * @class WheelchairController
- * @brief A class to handle wheelchair control via joystick input.
+ * @brief A class to handle wheelchair control via velocity and modality commands.
  *
- * This class provides an interface between ROS joystick messages and the
- * wheelchair controller, managing button presses and joystick movements.
+ * This class provides an interface between ROS velocity/modality messages and the
+ * wheelchair controller, managing speed, profile, and joystick movements.
  */
 class WheelchairController{
     // Define CAN interface (in my case always can0)
@@ -23,19 +24,14 @@ class WheelchairController{
         ControllerHandler controller_handler;
         
         /**
-         * @brief Timestamp of the last button press.
+         * @brief ROS subscriber for velocity commands.
          */
-        ros::Time last_button_time_;
+        ros::Subscriber cmd_vel_sub;
         
         /**
-         * @brief Minimum delay between button presses to prevent bouncing.
+         * @brief ROS subscriber for modality commands.
          */
-        ros::Duration button_delay_ = ros::Duration(0.2); // in seconds
-        
-        /**
-         * @brief ROS subscriber for joystick input.
-         */
-        ros::Subscriber joy_sub;
+        ros::Subscriber modality_sub;
 
     public:
         /**
@@ -50,11 +46,16 @@ class WheelchairController{
         ~WheelchairController();
 
         /**
-         * @brief Callback function for joystick messages.
-         * @param msg Pointer to the received joystick message.
+         * @brief Callback function for velocity command messages.
+         * @param msg Pointer to the received velocity message.
          */
-        void joyCallback(const sensor_msgs::Joy::ConstPtr& msg);
-
+        void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg);
+        
+        /**
+         * @brief Callback function for modality command messages.
+         * @param msg Pointer to the received modality message.
+         */
+        void modalityCallback(const std_msgs::Int8::ConstPtr& msg);
 };
 
 #endif // WHEELCHAIRCONTROLLER_HPP

@@ -1,0 +1,6 @@
+# Current speed level (20-100)
+current_speed_level: 50
+
+# Turning parameters
+min_turning_speed: 0.1    # Minimum turning speed in rad/s
+max_turning_speed: 1.0    # Maximum turning speed in rad/s

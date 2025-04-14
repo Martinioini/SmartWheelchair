@@ -124,6 +124,7 @@ add_library(${PROJECT_NAME}
   src/WheelchairController.cpp
   src/CANHandler.cpp
   src/ControllerHandler.cpp
+  src/JoyUtility.cpp
   # ... other source files ...
 )
 
@@ -160,6 +161,22 @@ add_dependencies(wheelchair_controller
 # Specify libraries to link against for the executable
 target_link_libraries(wheelchair_controller
   wheelchair_control
+  ${catkin_LIBRARIES}
+)
+
+# Add the joy_to_wheelchair executable
+add_executable(joy_to_wheelchair 
+  src/JoyToWheelchair.cpp
+)
+
+# Add dependencies for the executable
+add_dependencies(joy_to_wheelchair 
+  ${${PROJECT_NAME}_EXPORTED_TARGETS} 
+  ${catkin_EXPORTED_TARGETS}
+)
+
+# Specify libraries to link against for the executable
+target_link_libraries(joy_to_wheelchair
   ${catkin_LIBRARIES}
 )
 

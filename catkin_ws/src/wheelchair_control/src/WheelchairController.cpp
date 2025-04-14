@@ -1,54 +1,53 @@
 #include "../include/WheelchairController.hpp"
 
 WheelchairController::WheelchairController(ros::NodeHandle& nh): controller_handler(){
-
-    last_button_time_ = ros::Time::now();
+    // Subscribe to command velocity and modality topics
+    cmd_vel_sub = nh.subscribe("/cmd_vel", 10, &WheelchairController::cmdVelCallback, this);
+    modality_sub = nh.subscribe("/wheelchair_modality", 10, &WheelchairController::modalityCallback, this);
     
-    // Subscribe to joystick topic
-    joy_sub = nh.subscribe("/joy", 10, &WheelchairController::joyCallback, this);
+    ROS_INFO("WheelchairController initialized");
 }
 
 WheelchairController::~WheelchairController() {
+    // Ensure the wheelchair is in a safe state when shutting down
+    controller_handler.disableJailbreakMode();
 }
 
-// Callback for joystick messages
-void WheelchairController::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
-
-   if (ros::Time::now() - last_button_time_ > button_delay_) {
-       //button 
-       if (msg->buttons[1] == 1) {
-           controller_handler.increaseSpeed();
-           ROS_INFO("Increasing speed");
-       } 
-       //button A
-       else if (msg->buttons[2] == 1) {
-           controller_handler.decreaseSpeed();
-           ROS_INFO("Decreasing speed");
-       }
-       //button Lb
-       else if (msg->buttons[4] == 1) {
-           ROS_INFO("Turning off");
-           controller_handler.disableJailbreakMode();
-       }
-
-       else if (msg->buttons[6] == 1) {
-           controller_handler.setProfile(false);
-           ros::Duration(0.3).sleep();
-           ROS_INFO("Decreasing profile");
-       }
-
-       else if (msg->buttons[7] == 1) {
-           controller_handler.setProfile(true);
-           ROS_INFO("Increasing profile");
-           ros::Duration(0.3).sleep();
-       }
-       last_button_time_ = ros::Time::now();
-   }
-   
-    float x_axis = msg->axes[0];  // Left stick horizontal (-1 to 1)
-    float y_axis = msg->axes[1];  // Left stick vertical (-1 to 1)
-
+// Callback for velocity command messages
+void WheelchairController::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
+    float x_axis = msg->angular.z;  // Rotation
+    float y_axis = msg->linear.x;   // Forward/backward
+    
     controller_handler.setJoystick(x_axis, y_axis);
+}
+
+// Callback for modality command messages
+void WheelchairController::modalityCallback(const std_msgs::Int8::ConstPtr& msg) {
+    switch(msg->data) {
+        case 0: // Disable
+            ROS_INFO("Disabling jailbreak mode");
+            controller_handler.disableJailbreakMode();
+            break;
+        case 1: // Increase profile
+            ROS_INFO("Increasing profile");
+            controller_handler.setProfile(true);
+            break;
+        case 2: // Decrease profile
+            ROS_INFO("Decreasing profile");
+            controller_handler.setProfile(false);
+            break;
+        case 3: // Increase speed
+            ROS_INFO("Increasing speed");
+            controller_handler.increaseSpeed();
+            break;
+        case 4: // Decrease speed
+            ROS_INFO("Decreasing speed");
+            controller_handler.decreaseSpeed();
+            break;
+        default:
+            ROS_WARN("Unknown modality command: %d", msg->data);
+            break;
+    }
 }
 
 int main(int argc, char** argv) {
@@ -58,9 +57,11 @@ int main(int argc, char** argv) {
     try {
         WheelchairController wheelchair_controller(nh);
         
-        ROS_INFO("Wheelchair controller started. Listening for joystick input...");
+        ROS_INFO("Wheelchair controller started. Listening for velocity and modality commands...");
 
+        // Set the loop rate to 100Hz
         ros::Rate rate(100);
+        
         while (ros::ok()) {
             ros::spinOnce();
             rate.sleep();

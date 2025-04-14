@@ -5,6 +5,10 @@
     <param name="autorepeat_rate" value="100.0"/>
   </node>
   
+  <!-- Launch joy to wheelchair converter node -->
+  <node name="joy_to_wheelchair" pkg="wheelchair_control" type="joy_to_wheelchair" output="screen" required="true">
+  </node>
+  
   <!-- Launch wheelchair controller node -->
   <node name="wheelchair_controller" pkg="wheelchair_control" type="wheelchair_controller" output="screen" required="true">
     <!-- Set CAN interface parameter for real hardware -->
