@@ -177,6 +177,7 @@ add_dependencies(joy_to_wheelchair
 
 # Specify libraries to link against for the executable
 target_link_libraries(joy_to_wheelchair
+  wheelchair_control
   ${catkin_LIBRARIES}
 )
 

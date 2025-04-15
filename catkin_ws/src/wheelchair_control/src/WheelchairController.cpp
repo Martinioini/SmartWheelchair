@@ -1,48 +1,54 @@
 #include "../include/WheelchairController.hpp"
 
-WheelchairController::WheelchairController(ros::NodeHandle& nh): controller_handler(){
+WheelchairController::WheelchairController(ros::NodeHandle& nh) : nh_(nh) {
     // Subscribe to command velocity and modality topics
-    cmd_vel_sub = nh.subscribe("/cmd_vel", 10, &WheelchairController::cmdVelCallback, this);
-    modality_sub = nh.subscribe("/wheelchair_modality", 10, &WheelchairController::modalityCallback, this);
+    cmd_vel_sub_ = nh_.subscribe("/cmd_vel", 10, &WheelchairController::cmdVelCallback, this);
+    modality_sub_ = nh_.subscribe("/wheelchair_modality", 10, &WheelchairController::modalityCallback, this);
+    
+    // Initialize JoyUtility with parameters
+    joy_utility_.initFromParams(nh_);
     
     ROS_INFO("WheelchairController initialized");
 }
 
 WheelchairController::~WheelchairController() {
     // Ensure the wheelchair is in a safe state when shutting down
-    controller_handler.disableJailbreakMode();
+    controller_handler_.disableJailbreakMode();
 }
 
-// Callback for velocity command messages
 void WheelchairController::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& msg) {
-    float x_axis = msg->angular.z;  // Rotation
-    float y_axis = msg->linear.x;   // Forward/backward
+    // Convert velocity to joystick values using JoyUtility
+    sensor_msgs::Joy joy_msg = joy_utility_.velocityToJoy(*msg);
     
-    controller_handler.setJoystick(x_axis, y_axis);
+    // Set joystick values in controller
+    controller_handler_.setJoystick(joy_msg.axes[0], joy_msg.axes[1]);
 }
 
-// Callback for modality command messages
 void WheelchairController::modalityCallback(const std_msgs::Int8::ConstPtr& msg) {
     switch(msg->data) {
         case 0: // Disable
             ROS_INFO("Disabling jailbreak mode");
-            controller_handler.disableJailbreakMode();
+            controller_handler_.disableJailbreakMode();
             break;
         case 1: // Increase profile
             ROS_INFO("Increasing profile");
-            controller_handler.setProfile(true);
+            joy_utility_.increaseProfile();
+            controller_handler_.setProfile(true);
             break;
         case 2: // Decrease profile
             ROS_INFO("Decreasing profile");
-            controller_handler.setProfile(false);
+            joy_utility_.decreaseProfile();
+            controller_handler_.setProfile(false);
             break;
         case 3: // Increase speed
             ROS_INFO("Increasing speed");
-            controller_handler.increaseSpeed();
+            joy_utility_.increaseSpeed();
+            controller_handler_.increaseSpeed();
             break;
         case 4: // Decrease speed
             ROS_INFO("Decreasing speed");
-            controller_handler.decreaseSpeed();
+            joy_utility_.decreaseSpeed();
+            controller_handler_.decreaseSpeed();
             break;
         default:
             ROS_WARN("Unknown modality command: %d", msg->data);

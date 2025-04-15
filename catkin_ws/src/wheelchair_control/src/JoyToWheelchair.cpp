@@ -6,6 +6,9 @@ JoyToWheelchair::JoyToWheelchair(ros::NodeHandle& nh) : nh_(nh) {
     cmd_vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 10);
     modality_pub_ = nh_.advertise<std_msgs::Int8>("/wheelchair_modality", 10);
     
+    // Initialize JoyUtility with parameters
+    joy_utility_.initFromParams(nh_);
+    
     last_button_time_ = ros::Time::now();
     
     ROS_INFO("JoyToWheelchair node initialized");
@@ -29,6 +32,7 @@ void JoyToWheelchair::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
             ROS_INFO("Profile up command");
             std_msgs::Int8 modality_msg;
             modality_msg.data = 1; // 1 means increase profile
+            joy_utility_.increaseProfile();
             modality_pub_.publish(modality_msg);
             modality_changed = true;
         }
@@ -37,6 +41,7 @@ void JoyToWheelchair::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
             ROS_INFO("Profile down command");
             std_msgs::Int8 modality_msg;
             modality_msg.data = 2; // 2 means decrease profile
+            joy_utility_.decreaseProfile();
             modality_pub_.publish(modality_msg);
             modality_changed = true;
         }
@@ -45,6 +50,7 @@ void JoyToWheelchair::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
             ROS_INFO("Speed up command");
             std_msgs::Int8 modality_msg;
             modality_msg.data = 3; // 3 means increase speed
+            joy_utility_.increaseSpeed();
             modality_pub_.publish(modality_msg);
             modality_changed = true;
         }
@@ -53,6 +59,7 @@ void JoyToWheelchair::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
             ROS_INFO("Speed down command");
             std_msgs::Int8 modality_msg;
             modality_msg.data = 4; // 4 means decrease speed
+            joy_utility_.decreaseSpeed();
             modality_pub_.publish(modality_msg);
             modality_changed = true;
         }
@@ -70,14 +77,8 @@ void JoyToWheelchair::joyCallback(const sensor_msgs::Joy::ConstPtr& msg) {
         }
     }
     
-    // Process joystick axes for velocity commands
-    float x_axis = msg->axes[0];  // Left stick horizontal (-1 to 1)
-    float y_axis = msg->axes[1];  // Left stick vertical (-1 to 1)
-    
-    // Convert joystick input to velocity commands
-    geometry_msgs::Twist cmd_vel;
-    cmd_vel.linear.x = y_axis;  // Forward/backward
-    cmd_vel.angular.z = x_axis; // Rotation
+    // Convert joystick input to velocity using JoyUtility
+    geometry_msgs::Twist cmd_vel = joy_utility_.joyToVelocity(msg);
     
     // Publish velocity command
     cmd_vel_pub_.publish(cmd_vel);

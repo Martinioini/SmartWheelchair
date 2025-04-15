@@ -5,6 +5,7 @@
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/Joy.h>
 #include <map>
+#include <string>
 
 class JoyUtility {
 public:
@@ -20,28 +21,46 @@ public:
     // Convert velocity to joystick values (for visualization/debugging)
     sensor_msgs::Joy velocityToJoy(const geometry_msgs::Twist& twist);
 
-    // Set speed level (20-100)
-    void setSpeedLevel(int level);
+    // Set current profile (1-5)
+    void setProfile(int profile);
+
+    // Get current profile
+    int getCurrentProfile() const { return current_profile_; }
+
+    // Set speed percentage (20-100)
+    void setSpeedPercentage(float percentage);
+
+    // Profile control methods
+    void increaseProfile();
+    void decreaseProfile();
+
+    // Speed control methods
+    void increaseSpeed();
+    void decreaseSpeed();
+    float getCurrentSpeedPercentage() const { return current_speed_percentage_; }
 
 private:
     // Speed mappings (level -> speed in km/h)
-    std::map<int, double> speed_mappings_;
+    std::map<int, float> speed_mappings_;
 
-    // Turning speed parameters
-    double min_turning_speed_;    // rad/s
-    double max_turning_speed_;    // rad/s
+    // Current profile (1-5)
+    int current_profile_;
 
-    // Current speed level (20-100)
-    int current_speed_level_;
+    // Current speed percentage (20-100)
+    float current_speed_percentage_;
 
-    // Convert speed level to actual speed in km/h
-    double speedLevelToKmh(int level);
+    // Speed levels for current profile
+    struct SpeedLevels {
+        int max_forward;
+        int min_forward;
+        int max_backward;
+        int min_backward;
+        int max_turning;
+        int min_turning;
+    } current_levels_;
 
-    // Convert km/h to m/s
-    double kmhToMs(double kmh);
-
-    // Convert m/s to km/h
-    double msToKmh(double ms);
+    // Load speed levels for a profile
+    void loadProfileLevels(ros::NodeHandle& nh, int profile);
 };
 
 #endif // JOY_UTILITY_H 

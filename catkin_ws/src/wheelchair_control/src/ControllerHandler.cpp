@@ -4,7 +4,7 @@ ControllerHandler::ControllerHandler() : can_handler(0) {
     joystick_x = 0x00;
     joystick_y = 0x00;
 
-    speed = 0;
+    speed = 20;
 
     is_jailbreak_mode = false;
 
@@ -105,7 +105,7 @@ void ControllerHandler::setProfile(bool profile){
 }
 
 void ControllerHandler::setSpeed(uint16_t s){
-    if(s > 100 || s < 0){
+    if(s > 100 || s < 20){
         return;
     }
     std::stringstream ss;
@@ -157,7 +157,7 @@ void ControllerHandler::increaseSpeed() {
 }
 
 void ControllerHandler::decreaseSpeed() {
-    if(speed == 0){
+    if(speed == 20){
         return;
     }
     speed -= 10;

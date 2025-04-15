@@ -1,4 +1,7 @@
 <launch>
+  <!-- Load joy utility parameters -->
+  <rosparam command="load" file="$(find wheelchair_control)/config/joy_utility_params.yaml"/>
+  
   <!-- Launch joystick driver -->
   <node name="joy_node" pkg="joy" type="joy_node" output="screen" required="true">
     <param name="dev" value="/dev/input/js0"/>

@@ -5,6 +5,7 @@
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Int8.h>
+#include "JoyUtility.h"
 
 /**
  * @class JoyToWheelchair
@@ -19,6 +20,8 @@ private:
     ros::Subscriber joy_sub_;
     ros::Publisher cmd_vel_pub_;
     ros::Publisher modality_pub_;
+    
+    JoyUtility joy_utility_;  // Add JoyUtility member
     
     ros::Time last_button_time_;
     ros::Duration button_delay_ = ros::Duration(0.2); // in seconds
