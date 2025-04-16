@@ -149,8 +149,18 @@ public:
      * @brief Sets the wheelchair profile.
      * @param profile True to increase profile, false to decrease.
      */
-    void setProfile(bool profile);
+    void setProfile(uint8_t profile);
+
+    /**
+     * @brief Increases the wheelchair profile.
+     */
+    void increaseProfile();
     
+    /**
+     * @brief Decreases the wheelchair profile.
+     */
+    void decreaseProfile();
+
     /**
      * @brief Sets the RNET mode.
      * @param mode True to increase mode, false to decrease.

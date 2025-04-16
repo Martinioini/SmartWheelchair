@@ -27,7 +27,7 @@ public:
     // Get current profile
     int getCurrentProfile() const { return current_profile_; }
 
-    // Set speed percentage (20-100)
+    // Set speed percentage (0-100)
     void setSpeedPercentage(float percentage);
 
     // Profile control methods
@@ -40,13 +40,13 @@ public:
     float getCurrentSpeedPercentage() const { return current_speed_percentage_; }
 
 private:
-    // Speed mappings (level -> speed in km/h)
+    // Speed mappings (level -> speed in m/s)
     std::map<int, float> speed_mappings_;
 
     // Current profile (1-5)
     int current_profile_;
 
-    // Current speed percentage (20-100)
+    // Current speed percentage (0-100)
     float current_speed_percentage_;
 
     // Speed levels for current profile

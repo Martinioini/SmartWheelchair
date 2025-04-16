@@ -4,16 +4,18 @@ ControllerHandler::ControllerHandler() : can_handler(0) {
     joystick_x = 0x00;
     joystick_y = 0x00;
 
-    speed = 20;
+    speed = 0;
 
     is_jailbreak_mode = false;
 
     profile = 0;
+    setProfile(profile);
 
     injectRnetJoystickFrame();
     injectRNETjailbreakFrame();
     
-    can_handler.sendFrame("0a040100#0A");
+    setSpeed(speed);
+    
 }
 
 //destructor
@@ -74,38 +76,51 @@ void ControllerHandler::setJoystick(float x, float y){
     injectRnetJoystickFrame();
 }
 
-void ControllerHandler::setProfile(bool profile){
-     uint8_t prev_profile = this->profile;
-     uint8_t new_profile;
+void ControllerHandler::increaseProfile(){
+    uint8_t prev_profile = this->profile;
+    uint8_t new_profile;
 
-     if(profile){
-        // If at max profile, wrap around to 0
-        if(prev_profile == numProfiles - 1){
-            new_profile = 0;
-        } else {
-            new_profile = prev_profile + 1;
-        }
+    if(prev_profile == numProfiles - 1){
+        new_profile = 0;
+    } else {
+        new_profile = prev_profile + 1;
+    }
+    this->profile = new_profile;
+
+    setProfile(new_profile);
+}
+
+void ControllerHandler::decreaseProfile(){
+    uint8_t prev_profile = this->profile;
+    uint8_t new_profile;
+
+    if(prev_profile == 0){
+        new_profile = numProfiles - 1;
+    } else {
+        new_profile = prev_profile - 1;
+    }
+
+    this->profile = new_profile;
+
+    setProfile(new_profile);
+}
+
+void ControllerHandler::setProfile(uint8_t profile){
+     
+     if(profile < numProfiles && profile >= 0){
+        this->profile = profile;
+        std::stringstream ss;
+        ss << "051#000" << std::setfill('0') << std::setw(1) << std::hex << static_cast<int>(this->profile) << "0000";
+        std::cout << "Sending CAN frame: " << ss.str() << std::endl;
+        can_handler.sendFrame(ss.str());
      }
      else{
-        // If at profile 0, wrap around to max profile
-        if(prev_profile == 0){
-            new_profile = numProfiles - 1;
-        } else {
-            new_profile = prev_profile - 1;
-        }
+        std::cerr << "Invalid profile: " << profile << std::endl;
      }
-
-     this->profile = new_profile;
-     
-     std::stringstream ss;
-     ss << "051#000" << std::setfill('0') << std::setw(1) << std::hex << static_cast<int>(this->profile) << "0000";
-     
-     std::cout << "Sending CAN frame: " << ss.str() << std::endl;
-     can_handler.sendFrame(ss.str());
 }
 
 void ControllerHandler::setSpeed(uint16_t s){
-    if(s > 100 || s < 20){
+    if(s > 100 || s < 0){
         return;
     }
     std::stringstream ss;
@@ -147,7 +162,7 @@ void ControllerHandler::disableJailbreakMode(){
 
 void ControllerHandler::increaseSpeed() {
 
-    if(speed == 100){
+    if(speed >= 100){
         return;
     }
     speed += 10;
@@ -157,7 +172,7 @@ void ControllerHandler::increaseSpeed() {
 }
 
 void ControllerHandler::decreaseSpeed() {
-    if(speed == 20){
+    if(speed <= 0){
         return;
     }
     speed -= 10;

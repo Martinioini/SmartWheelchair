@@ -201,9 +201,10 @@ bool CANHandler::sendFrame(const std::string& frameStr) {
         
         if (nbytes != sizeof(struct can_frame)) {
             std::cerr << "Error sending CAN frame " << frameStr << ": " << strerror(errno) << std::endl;
+            flushCANBuffer();
             close(socketFd_);
             socketFd_ = -1;
-            flushCANBuffer();
+            
             
             // If the socket is bad, close it and try to reopen
             
