@@ -91,6 +91,9 @@ source ~/catkin_ws/devel/setup.bash
 roslaunch wheelchair_control real_wheelchair.launch 
 ```
 
+## ROS nodes structure
+![ROS nodes](node_structure.png)
+
 ## Controller Layout
 Below is the layout of the controller used for wheelchair control:
 
