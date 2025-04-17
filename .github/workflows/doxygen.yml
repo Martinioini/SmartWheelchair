@@ -18,10 +18,6 @@ jobs:
       - name: Generate Documentation
         run: doxygen catkin_ws/Doxyfile 
 
-      # Debug step: List contents of generated docs folder
-      - name: List contents of generated docs
-        run: ls -lR catkin_ws/docs
-
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
