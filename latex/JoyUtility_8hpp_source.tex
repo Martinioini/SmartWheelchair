@@ -1,0 +1,61 @@
+\doxysection{Joy\+Utility.\+hpp}
+\hypertarget{JoyUtility_8hpp_source}{}\label{JoyUtility_8hpp_source}\index{catkin\_ws/src/wheelchair\_control/include/JoyUtility.hpp@{catkin\_ws/src/wheelchair\_control/include/JoyUtility.hpp}}
+\mbox{\hyperlink{JoyUtility_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ JOY\_UTILITY\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ JOY\_UTILITY\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <ros/ros.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <geometry\_msgs/Twist.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <sensor\_msgs/Joy.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <map>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classJoyUtility}{JoyUtility}}\ \{}
+\DoxyCodeLine{00018\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{classJoyUtility_a4b6042ac89937b608c3374701cd575f5}{JoyUtility}}();}
+\DoxyCodeLine{00023\ \ \ \ \ }
+\DoxyCodeLine{00027\ \ \ \ \ \mbox{\hyperlink{classJoyUtility_a36e384440d5114f99ddbc8a9f78170e4}{\string~JoyUtility}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classJoyUtility_a49c7ed6271b43cf46a65d60377d84849}{initFromParams}}(ros::NodeHandle\&\ nh);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00040\ \ \ \ \ geometry\_msgs::Twist\ \mbox{\hyperlink{classJoyUtility_ab3104e28795c6ae9d5197143204465ef}{joyToVelocity}}(\textcolor{keyword}{const}\ sensor\_msgs::Joy::ConstPtr\&\ joy\_msg);}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00047\ \ \ \ \ sensor\_msgs::Joy\ \mbox{\hyperlink{classJoyUtility_ae936ab7cd1f0e620d3bed17c1ea734de}{velocityToJoy}}(\textcolor{keyword}{const}\ geometry\_msgs::Twist\&\ twist);}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classJoyUtility_a2552c59d849ffef322bdf46f7107aeef}{setProfile}}(\textcolor{keywordtype}{int}\ profile);}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classJoyUtility_a25932e7179df93042c18d9f231be8486}{getCurrentProfile}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ current\_profile\_;\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classJoyUtility_aa1f3758a58624d8d58eaa8cd93ab34f6}{setSpeedPercentage}}(\textcolor{keywordtype}{float}\ percentage);}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classJoyUtility_a0ae4b87ef2d8fd07245654ea30459dd9}{increaseProfile}}();}
+\DoxyCodeLine{00071\ \ \ \ \ }
+\DoxyCodeLine{00075\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classJoyUtility_ab26af3f4f9613659478de79ceef0d11b}{decreaseProfile}}();}
+\DoxyCodeLine{00076\ }
+\DoxyCodeLine{00080\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classJoyUtility_a06a02b927bb50be67fca834f7136f0bd}{increaseSpeed}}();}
+\DoxyCodeLine{00081\ \ \ \ \ }
+\DoxyCodeLine{00085\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classJoyUtility_a0c415d0310cda7ad2aaf3e9a8d73ec45}{decreaseSpeed}}();}
+\DoxyCodeLine{00086\ \ \ \ \ }
+\DoxyCodeLine{00091\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{classJoyUtility_a789681233d9856e5877e6e2b347f4819}{getCurrentSpeedPercentage}}()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ current\_speed\_percentage\_;\ \}}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00094\ \ \ \ \ std::map<int,\ float>\ speed\_mappings\_;\ }
+\DoxyCodeLine{00095\ \ \ \ \ \textcolor{keywordtype}{int}\ current\_profile\_;\ }
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordtype}{float}\ current\_speed\_percentage\_;\ }
+\DoxyCodeLine{00097\ }
+\DoxyCodeLine{00101\ \ \ \ \ \textcolor{keyword}{struct\ }SpeedLevels\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ max\_forward;\ }
+\DoxyCodeLine{00103\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ min\_forward;\ }
+\DoxyCodeLine{00104\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ max\_backward;\ }
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ min\_backward;\ }
+\DoxyCodeLine{00106\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ max\_turning;\ }
+\DoxyCodeLine{00107\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ min\_turning;\ }
+\DoxyCodeLine{00108\ \ \ \ \ \}\ current\_levels\_;}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordtype}{void}\ loadProfileLevels(ros::NodeHandle\&\ nh,\ \textcolor{keywordtype}{int}\ profile);}
+\DoxyCodeLine{00116\ \};}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ JOY\_UTILITY\_H\ }}
+
+\end{DoxyCode}

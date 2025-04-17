@@ -1,0 +1,36 @@
+\doxysection{CANHandler.\+hpp}
+\hypertarget{CANHandler_8hpp_source}{}\label{CANHandler_8hpp_source}\index{catkin\_ws/src/wheelchair\_control/include/CANHandler.hpp@{catkin\_ws/src/wheelchair\_control/include/CANHandler.hpp}}
+\mbox{\hyperlink{CANHandler_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ CANHANDLER\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ CANHANDLER\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <linux/can.h>}}
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classCANHandler}{CANHandler}}\ \{}
+\DoxyCodeLine{00016\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00020\ \ \ \ \ \mbox{\hyperlink{classCANHandler_a9b8ed61c6dac73788e4091c12448c76e}{CANHandler}}();}
+\DoxyCodeLine{00021\ \ \ \ \ }
+\DoxyCodeLine{00026\ \ \ \ \ \mbox{\hyperlink{classCANHandler_a9b8ed61c6dac73788e4091c12448c76e}{CANHandler}}(\textcolor{keywordtype}{int}\ busNum);}
+\DoxyCodeLine{00027\ \ \ \ \ }
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{classCANHandler_a5edb7a304ec254a8a6b57db4b89a66d5}{\string~CANHandler}}();}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classCANHandler_a660116a812bb80a23a61e0deb654bb3f}{flushCANBuffer}}();}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classCANHandler_a06aba0c8d36f90c0b69c69540b2eebeb}{openSocket}}(\textcolor{keywordtype}{int}\ canNum);}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keyword}{struct\ }can\_frame\ \mbox{\hyperlink{classCANHandler_a908e69ef07e5c5c5a0d30f7b2a97b41c}{buildFrame}}(const\ std::string\&\ canStr);}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00057\ \ \ \ \ bool\ \mbox{\hyperlink{classCANHandler_aaa3193f5aa867769991bf432c726dbc6}{sendFrame}}(const\ std::string\&\ frameStr);}
+\DoxyCodeLine{00058\ }
+\DoxyCodeLine{00064\ \ \ \ \ std::string\ \mbox{\hyperlink{classCANHandler_a671a8b245ca13c52da8d12eb49cd3f58}{dissectFrame}}(const\ can\_frame\&\ frame);}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00067\ \ \ \ \ int\ socketFd\_;\ }
+\DoxyCodeLine{00068\ \};}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ CANHANDLER\_HPP\ }}
+
+\end{DoxyCode}

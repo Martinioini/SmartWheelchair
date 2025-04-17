@@ -1,0 +1,164 @@
+\doxysection{CANHandler Class Reference}
+\hypertarget{classCANHandler}{}\label{classCANHandler}\index{CANHandler@{CANHandler}}
+
+
+A class to handle CAN communication.  
+
+
+
+
+{\ttfamily \#include $<$CANHandler.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classCANHandler_a9b8ed61c6dac73788e4091c12448c76e}{CANHandler}} ()
+\begin{DoxyCompactList}\small\item\em Default constructor -\/ uses bus 0. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classCANHandler_a5bd6599685b916d129deac7ce8a9efd3}{CANHandler}} (int bus\+Num)
+\begin{DoxyCompactList}\small\item\em Constructor with specified bus number. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classCANHandler_a5edb7a304ec254a8a6b57db4b89a66d5}{\texorpdfstring{$\sim$}{\string~}\+CANHandler}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCANHandler_a660116a812bb80a23a61e0deb654bb3f}{flush\+CANBuffer}} ()
+\begin{DoxyCompactList}\small\item\em Flushes the CAN buffer by reading and discarding frames. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classCANHandler_a06aba0c8d36f90c0b69c69540b2eebeb}{open\+Socket}} (int can\+Num)
+\begin{DoxyCompactList}\small\item\em Opens a socket for the specified CAN bus. \end{DoxyCompactList}\item 
+struct can\+\_\+frame \mbox{\hyperlink{classCANHandler_a908e69ef07e5c5c5a0d30f7b2a97b41c}{build\+Frame}} (const std\+::string \&can\+Str)
+\begin{DoxyCompactList}\small\item\em Builds a CAN frame from a string representation. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classCANHandler_aaa3193f5aa867769991bf432c726dbc6}{send\+Frame}} (const std\+::string \&frame\+Str)
+\begin{DoxyCompactList}\small\item\em Sends a CAN frame. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classCANHandler_a671a8b245ca13c52da8d12eb49cd3f58}{dissect\+Frame}} (const can\+\_\+frame \&frame)
+\begin{DoxyCompactList}\small\item\em Dissects a CAN frame into a string representation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class to handle CAN communication. 
+
+This class provides methods to send and receive CAN frames, manage the CAN socket, and flush the CAN buffer. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classCANHandler_a9b8ed61c6dac73788e4091c12448c76e}\label{classCANHandler_a9b8ed61c6dac73788e4091c12448c76e} 
+\index{CANHandler@{CANHandler}!CANHandler@{CANHandler}}
+\index{CANHandler@{CANHandler}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{CANHandler()}{CANHandler()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily CANHandler\+::\+CANHandler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Default constructor -\/ uses bus 0. 
+
+\Hypertarget{classCANHandler_a5bd6599685b916d129deac7ce8a9efd3}\label{classCANHandler_a5bd6599685b916d129deac7ce8a9efd3} 
+\index{CANHandler@{CANHandler}!CANHandler@{CANHandler}}
+\index{CANHandler@{CANHandler}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{CANHandler()}{CANHandler()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily CANHandler\+::\+CANHandler (\begin{DoxyParamCaption}\item[{int}]{bus\+Num }\end{DoxyParamCaption})}
+
+
+
+Constructor with specified bus number. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em bus\+Num} & The bus number to be used for CAN communication. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCANHandler_a5edb7a304ec254a8a6b57db4b89a66d5}\label{classCANHandler_a5edb7a304ec254a8a6b57db4b89a66d5} 
+\index{CANHandler@{CANHandler}!````~CANHandler@{\texorpdfstring{$\sim$}{\string~}CANHandler}}
+\index{````~CANHandler@{\texorpdfstring{$\sim$}{\string~}CANHandler}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}CANHandler()}{\string~CANHandler()}}
+{\footnotesize\ttfamily CANHandler\+::\texorpdfstring{$\sim$}{\string~}\+CANHandler (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Destructor. 
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classCANHandler_a908e69ef07e5c5c5a0d30f7b2a97b41c}\label{classCANHandler_a908e69ef07e5c5c5a0d30f7b2a97b41c} 
+\index{CANHandler@{CANHandler}!buildFrame@{buildFrame}}
+\index{buildFrame@{buildFrame}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{buildFrame()}{buildFrame()}}
+{\footnotesize\ttfamily struct can\+\_\+frame CANHandler\+::build\+Frame (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{can\+Str }\end{DoxyParamCaption})}
+
+
+
+Builds a CAN frame from a string representation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em can\+Str} & The string representation of the CAN frame. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The constructed can\+\_\+frame structure. 
+\end{DoxyReturn}
+\Hypertarget{classCANHandler_a671a8b245ca13c52da8d12eb49cd3f58}\label{classCANHandler_a671a8b245ca13c52da8d12eb49cd3f58} 
+\index{CANHandler@{CANHandler}!dissectFrame@{dissectFrame}}
+\index{dissectFrame@{dissectFrame}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{dissectFrame()}{dissectFrame()}}
+{\footnotesize\ttfamily std\+::string CANHandler\+::dissect\+Frame (\begin{DoxyParamCaption}\item[{const can\+\_\+frame \&}]{frame }\end{DoxyParamCaption})}
+
+
+
+Dissects a CAN frame into a string representation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame} & The CAN frame to dissect. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The string representation of the CAN frame. 
+\end{DoxyReturn}
+\Hypertarget{classCANHandler_a660116a812bb80a23a61e0deb654bb3f}\label{classCANHandler_a660116a812bb80a23a61e0deb654bb3f} 
+\index{CANHandler@{CANHandler}!flushCANBuffer@{flushCANBuffer}}
+\index{flushCANBuffer@{flushCANBuffer}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{flushCANBuffer()}{flushCANBuffer()}}
+{\footnotesize\ttfamily void CANHandler\+::flush\+CANBuffer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Flushes the CAN buffer by reading and discarding frames. 
+
+\Hypertarget{classCANHandler_a06aba0c8d36f90c0b69c69540b2eebeb}\label{classCANHandler_a06aba0c8d36f90c0b69c69540b2eebeb} 
+\index{CANHandler@{CANHandler}!openSocket@{openSocket}}
+\index{openSocket@{openSocket}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{openSocket()}{openSocket()}}
+{\footnotesize\ttfamily bool CANHandler\+::open\+Socket (\begin{DoxyParamCaption}\item[{int}]{can\+Num }\end{DoxyParamCaption})}
+
+
+
+Opens a socket for the specified CAN bus. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em can\+Num} & The CAN bus number to open. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the socket was successfully opened, false otherwise. 
+\end{DoxyReturn}
+\Hypertarget{classCANHandler_aaa3193f5aa867769991bf432c726dbc6}\label{classCANHandler_aaa3193f5aa867769991bf432c726dbc6} 
+\index{CANHandler@{CANHandler}!sendFrame@{sendFrame}}
+\index{sendFrame@{sendFrame}!CANHandler@{CANHandler}}
+\doxysubsubsection{\texorpdfstring{sendFrame()}{sendFrame()}}
+{\footnotesize\ttfamily bool CANHandler\+::send\+Frame (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{frame\+Str }\end{DoxyParamCaption})}
+
+
+
+Sends a CAN frame. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame\+Str} & The string representation of the CAN frame to send. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the frame was successfully sent, false otherwise. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+catkin\+\_\+ws/src/wheelchair\+\_\+control/include/\mbox{\hyperlink{CANHandler_8hpp}{CANHandler.\+hpp}}\item 
+catkin\+\_\+ws/src/wheelchair\+\_\+control/src/\mbox{\hyperlink{CANHandler_8cpp}{CANHandler.\+cpp}}\end{DoxyCompactItemize}

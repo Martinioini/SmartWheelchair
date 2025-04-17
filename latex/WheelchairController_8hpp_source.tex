@@ -1,0 +1,38 @@
+\doxysection{Wheelchair\+Controller.\+hpp}
+\hypertarget{WheelchairController_8hpp_source}{}\label{WheelchairController_8hpp_source}\index{catkin\_ws/src/wheelchair\_control/include/WheelchairController.hpp@{catkin\_ws/src/wheelchair\_control/include/WheelchairController.hpp}}
+\mbox{\hyperlink{WheelchairController_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ WHEELCHAIRCONTROLLER\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ WHEELCHAIRCONTROLLER\_HPP}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <ros/ros.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <geometry\_msgs/Twist.h>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <std\_msgs/Int8.h>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <sensor\_msgs/Joy.h>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{ControllerHandler_8hpp}{ControllerHandler.hpp}}"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{JoyUtility_8hpp}{JoyUtility.hpp}}"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00020\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classWheelchairController}{WheelchairController}}\ \{}
+\DoxyCodeLine{00021\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00022\ \ \ \ \ ros::NodeHandle\ nh\_;}
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{classControllerHandler}{ControllerHandler}}\ controller\_handler\_;}
+\DoxyCodeLine{00024\ \ \ \ \ \mbox{\hyperlink{classJoyUtility}{JoyUtility}}\ joy\_utility\_;}
+\DoxyCodeLine{00025\ \ \ \ \ ros::Subscriber\ cmd\_vel\_sub\_;}
+\DoxyCodeLine{00026\ \ \ \ \ ros::Subscriber\ modality\_sub\_;}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00033\ \ \ \ \ \mbox{\hyperlink{classWheelchairController}{WheelchairController}}(ros::NodeHandle\&\ nh);}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{classWheelchairController_a1366799a8a60086bb9eadc87449b7b28}{\string~WheelchairController}}();}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classWheelchairController_a8f66ab366ab397f60c889c209db01169}{cmdVelCallback}}(\textcolor{keyword}{const}\ geometry\_msgs::Twist::ConstPtr\&\ msg);}
+\DoxyCodeLine{00045\ \ \ \ \ }
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classWheelchairController_abadf7ab87f69015644374df94fb94eed}{modalityCallback}}(\textcolor{keyword}{const}\ std\_msgs::Int8::ConstPtr\&\ msg);}
+\DoxyCodeLine{00051\ \};}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ WHEELCHAIRCONTROLLER\_HPP}}
+\DoxyCodeLine{00054\ }
+
+\end{DoxyCode}

@@ -1,0 +1,94 @@
+\doxysection{Wheelchair\+Controller Class Reference}
+\hypertarget{classWheelchairController}{}\label{classWheelchairController}\index{WheelchairController@{WheelchairController}}
+
+
+A class to handle wheelchair control via velocity and modality commands.  
+
+
+
+
+{\ttfamily \#include $<$Wheelchair\+Controller.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classWheelchairController_a4984c06348ec1159613673b1f3dacbd3}{Wheelchair\+Controller}} (ros\+::\+Node\+Handle \&nh)
+\begin{DoxyCompactList}\small\item\em Constructor for the wheelchair controller. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classWheelchairController_a1366799a8a60086bb9eadc87449b7b28}{\texorpdfstring{$\sim$}{\string~}\+Wheelchair\+Controller}} ()
+\begin{DoxyCompactList}\small\item\em Destructor for the wheelchair controller. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classWheelchairController_a8f66ab366ab397f60c889c209db01169}{cmd\+Vel\+Callback}} (const geometry\+\_\+msgs\+::\+Twist\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback function for velocity command messages. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classWheelchairController_abadf7ab87f69015644374df94fb94eed}{modality\+Callback}} (const std\+\_\+msgs\+::\+Int8\+::\+Const\+Ptr \&msg)
+\begin{DoxyCompactList}\small\item\em Callback function for modality command messages. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+A class to handle wheelchair control via velocity and modality commands. 
+
+This class provides an interface between ROS velocity/modality messages and the wheelchair controller, managing speed, profile, and joystick movements. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classWheelchairController_a4984c06348ec1159613673b1f3dacbd3}\label{classWheelchairController_a4984c06348ec1159613673b1f3dacbd3} 
+\index{WheelchairController@{WheelchairController}!WheelchairController@{WheelchairController}}
+\index{WheelchairController@{WheelchairController}!WheelchairController@{WheelchairController}}
+\doxysubsubsection{\texorpdfstring{WheelchairController()}{WheelchairController()}}
+{\footnotesize\ttfamily Wheelchair\+Controller\+::\+Wheelchair\+Controller (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{nh }\end{DoxyParamCaption})}
+
+
+
+Constructor for the wheelchair controller. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nh} & ROS node handle for creating subscribers. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classWheelchairController_a1366799a8a60086bb9eadc87449b7b28}\label{classWheelchairController_a1366799a8a60086bb9eadc87449b7b28} 
+\index{WheelchairController@{WheelchairController}!````~WheelchairController@{\texorpdfstring{$\sim$}{\string~}WheelchairController}}
+\index{````~WheelchairController@{\texorpdfstring{$\sim$}{\string~}WheelchairController}!WheelchairController@{WheelchairController}}
+\doxysubsubsection{\texorpdfstring{\texorpdfstring{$\sim$}{\string~}WheelchairController()}{\string~WheelchairController()}}
+{\footnotesize\ttfamily Wheelchair\+Controller\+::\texorpdfstring{$\sim$}{\string~}\+Wheelchair\+Controller (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Destructor for the wheelchair controller. 
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classWheelchairController_a8f66ab366ab397f60c889c209db01169}\label{classWheelchairController_a8f66ab366ab397f60c889c209db01169} 
+\index{WheelchairController@{WheelchairController}!cmdVelCallback@{cmdVelCallback}}
+\index{cmdVelCallback@{cmdVelCallback}!WheelchairController@{WheelchairController}}
+\doxysubsubsection{\texorpdfstring{cmdVelCallback()}{cmdVelCallback()}}
+{\footnotesize\ttfamily void Wheelchair\+Controller\+::cmd\+Vel\+Callback (\begin{DoxyParamCaption}\item[{const geometry\+\_\+msgs\+::\+Twist\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback function for velocity command messages. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Pointer to the received velocity message. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classWheelchairController_abadf7ab87f69015644374df94fb94eed}\label{classWheelchairController_abadf7ab87f69015644374df94fb94eed} 
+\index{WheelchairController@{WheelchairController}!modalityCallback@{modalityCallback}}
+\index{modalityCallback@{modalityCallback}!WheelchairController@{WheelchairController}}
+\doxysubsubsection{\texorpdfstring{modalityCallback()}{modalityCallback()}}
+{\footnotesize\ttfamily void Wheelchair\+Controller\+::modality\+Callback (\begin{DoxyParamCaption}\item[{const std\+\_\+msgs\+::\+Int8\+::\+Const\+Ptr \&}]{msg }\end{DoxyParamCaption})}
+
+
+
+Callback function for modality command messages. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Pointer to the received modality message. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+catkin\+\_\+ws/src/wheelchair\+\_\+control/include/\mbox{\hyperlink{WheelchairController_8hpp}{Wheelchair\+Controller.\+hpp}}\item 
+catkin\+\_\+ws/src/wheelchair\+\_\+control/src/\mbox{\hyperlink{WheelchairController_8cpp}{Wheelchair\+Controller.\+cpp}}\end{DoxyCompactItemize}
