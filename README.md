@@ -95,8 +95,8 @@ roslaunch wheelchair_control real_wheelchair.launch
 ![ROS nodes](node_structure.png)
 
 ## Real time speed processing.
-The program is able to get the speed of the wheelchair runtime, they are calculated using the parameters set on the profiles in the wheelchair configuration, the current speed level set on the JSM module and how much the stick of the controller is tilted. if you want you can control the movement of the wheelchair by just publishing cmd_vel commands from the wheelchair.
-Note: if you want to have a precise value for your wheelchair you will need to match the parameters yaml file to the ones on the wheelchair. you will also need to test the max values of speed to correctly adjust the speed map in the joy_utility file.
+The program is able to get the speed of the wheelchair runtime, they are calculated using the parameters set on the profiles in the wheelchair configuration, the current speed level set on the JSM module and how much the stick of the controller is tilted. if you want you can control the movement of the wheelchair by just publishing cmd_vel commands to the wheelchair.
+Note: if you want to have a precise value for your wheelchair you will need to match the parameters yaml file to the ones on the wheelchair. you will also need to test the max values of speed to correctly adjust the speed map in the joy_utility file. To do this set the max forward speed in the jsm module to 5, set the max speed in movement mode and manually test the speed. Increase by 5 the max forward speed and repeat until you have reached 100, tracking down the values in km/h and converting them to m/s. If you don't adjust the values the functioning of the joystick control will still work without any issues but the values reported in the output will not be accurate.
 
 ## Controller Layout
 Below is the layout of the controller used for wheelchair control:
