@@ -33,12 +33,12 @@ void WheelchairController::modalityCallback(const std_msgs::Int8::ConstPtr& msg)
         case 1: // Increase profile
             ROS_INFO("Increasing profile");
             joy_utility_.increaseProfile();
-            controller_handler_.setProfile(true);
+            controller_handler_.increaseProfile();
             break;
         case 2: // Decrease profile
             ROS_INFO("Decreasing profile");
             joy_utility_.decreaseProfile();
-            controller_handler_.setProfile(false);
+            controller_handler_.decreaseProfile();
             break;
         case 3: // Increase speed
             ROS_INFO("Increasing speed");

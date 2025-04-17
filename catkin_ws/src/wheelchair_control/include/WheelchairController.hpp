@@ -7,7 +7,7 @@
 #include <sensor_msgs/Joy.h>
 #include <functional>
 #include "ControllerHandler.hpp"
-#include "JoyUtility.h"
+#include "JoyUtility.hpp"
 #include <string>
 
 /**

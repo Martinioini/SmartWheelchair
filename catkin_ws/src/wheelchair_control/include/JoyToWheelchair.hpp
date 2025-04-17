@@ -5,7 +5,7 @@
 #include <sensor_msgs/Joy.h>
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Int8.h>
-#include "JoyUtility.h"
+#include "JoyUtility.hpp"
 
 /**
  * @class JoyToWheelchair

@@ -1,4 +1,4 @@
-#include "JoyUtility.h"
+#include "JoyUtility.hpp"
 #include <cmath>
 
 JoyUtility::JoyUtility() : current_profile_(0), current_speed_percentage_(0.0f) // Default to 0%
@@ -112,7 +112,7 @@ geometry_msgs::Twist JoyUtility::joyToVelocity(const sensor_msgs::Joy::ConstPtr&
     float current_max_turning = min_turning + (max_turning - min_turning) * speed_factor;
     ROS_INFO("Current max turning speed: %f", current_max_turning);
     
-    // Calculate final turning speed based on joystick position
+    // Calculate final turnin speed based on joystick position
     float turning_speed = current_max_turning * angular_z;
     twist.angular.z = turning_speed;
     
