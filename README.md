@@ -66,6 +66,11 @@ sudo ip link set can0 type can bitrate 125000
 sudo ip link set up can0
 ```
 
+If you want to automate this step every time a usb-can adapter is connected to the hardware go to /etc/udev and create a file 90-can.rules and paste this inside (make sure it matches your adapter):
+
+```bash
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="can0", ATTRS{idVendor}=="1d50", ATTRS{idProduct}=="606f", RUN+="/usr/bin/ip link set can0 up type can bitrate 125000"
+```
 
 
 ### 3. Test CAN communication
