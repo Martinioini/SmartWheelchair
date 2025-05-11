@@ -52,7 +52,7 @@ void JoyUtility::loadProfileLevels(ros::NodeHandle& nh, int profile)
 
 void JoyUtility::setSpeedPercentage(float percentage)
 {
-    // Clamp between 20% and 100%
+    // Clamp between 0% and 100%
     if(percentage > 100.0f || percentage < 0.0f){
         ROS_WARN("Speed percentage %f out of range (0-100)", percentage);
         return;
@@ -114,7 +114,7 @@ geometry_msgs::Twist JoyUtility::joyToVelocity(const sensor_msgs::Joy::ConstPtr&
     
     // Calculate final turnin speed based on joystick position
     float turning_speed = current_max_turning * angular_z;
-    twist.angular.z = turning_speed;
+    twist.angular.z = turning_speed / radius;
     
     ROS_INFO("Output twist - linear: %f, angular: %f", twist.linear.x, twist.angular.z);
     
@@ -152,10 +152,8 @@ sensor_msgs::Joy JoyUtility::velocityToJoy(const geometry_msgs::Twist& twist)
     float min_turning = speed_mappings_[current_levels_.min_turning];
     float max_turning = speed_mappings_[current_levels_.max_turning];
     float current_max_turning = min_turning + (max_turning - min_turning) * speed_factor;
-    joy_msg.axes[0] = twist.angular.z / current_max_turning;
-    
-    ROS_INFO("Output joystick values - linear: %f, angular: %f", joy_msg.axes[1], joy_msg.axes[0]);
-    
+    joy_msg.axes[0] = (twist.angular.z * radius) / current_max_turning;
+        
     return joy_msg;
 }
 

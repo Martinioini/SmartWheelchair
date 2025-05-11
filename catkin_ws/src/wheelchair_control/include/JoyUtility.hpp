@@ -94,6 +94,7 @@ private:
     std::map<int, float> speed_mappings_; ///< Mapping of speed levels to actual speeds in m/s
     int current_profile_; ///< Current profile number (0-4)
     float current_speed_percentage_; ///< Current speed percentage (0-100)
+    const float radius = 0.28f;
 
     /**
      * @brief Structure to hold speed level settings for a profile.
